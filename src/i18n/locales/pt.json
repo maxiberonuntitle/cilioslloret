@@ -1,0 +1,86 @@
+{
+  "nav": {
+    "logo": "Cílios Lloret",
+    "services": "Serviços",
+    "gallery": "Galeria",
+    "contact": "Contacto",
+    "cta": "Reservar por WhatsApp"
+  },
+  "hero": {
+    "headlineBefore": "Realce o seu olhar com ",
+    "headlineHighlight": "extensões de cílios",
+    "location": "Lloret de Mar",
+    "subheadline": "Atenção personalizada e serviço profissional. Trabalhamos em domicílio para o seu conforto.",
+    "cta": "Reserve a sua consulta por WhatsApp",
+    "trust1": "Qualidade premium",
+    "trust2": "Atenção personalizada",
+    "trust3": "Trabalho em domicílio"
+  },
+  "trust": {
+    "title": "Por que escolher Cílios Lloret?",
+    "benefit1": {
+      "title": "Atenção personalizada",
+      "desc": "Cada cliente é única. Adaptamos o estilo e volume ao seu olhar."
+    },
+    "benefit2": {
+      "title": "Serviço profissional",
+      "desc": "Técnicas certificadas e materiais de primeira qualidade."
+    },
+    "benefit3": {
+      "title": "Trabalho em domicílio",
+      "desc": "Atendemos na comodidade da sua casa em Lloret de Mar."
+    }
+  },
+  "services": {
+    "title": "Os nossos serviços",
+    "subtitle": "Extensões de cílios para cada estilo",
+    "extensions": "Extensões de cílios",
+    "extensionsDesc": "Cílio a cílio para um look natural e duradouro.",
+    "volume": "Volume",
+    "volumeDesc": "Efeito mais denso e dramático com múltiplas extensões por cílio.",
+    "classic": "Clássicas",
+    "classicDesc": "Estilo clássico e elegante que realça o seu olhar.",
+    "home": "Trabalho em domicílio",
+    "cta": "Quero este serviço"
+  },
+  "gallery": {
+    "title": "Antes e Depois",
+    "subtitle": "Resultados reais das nossas clientes"
+  },
+  "conversion": {
+    "title": "Pronta para realçar o seu olhar?",
+    "subtitle": "Consulte disponibilidade agora e reserve a sua consulta diretamente com Vanessa.",
+    "cta": "Fale diretamente com Vanessa"
+  },
+  "contact": {
+    "title": "Contacto",
+    "shareCard": "Compartilhar cartão",
+    "shareSuccess": "Compartilhado!",
+    "downloadCard": "Baixar PDF",
+    "name": "Vanessa Gonçalvez",
+    "whatsapp": "+34 601 877 214",
+    "location": "Lloret de Mar, Costa Brava",
+    "formTitle": "Ou escreva-nos aqui",
+    "nameLabel": "Nome",
+    "emailLabel": "Email",
+    "messageLabel": "Mensagem",
+    "namePlaceholder": "O seu nome",
+    "emailPlaceholder": "o_seu@email.com",
+    "messagePlaceholder": "Conte-me o que precisa...",
+    "submit": "Enviar mensagem",
+    "afterSubmit": "Para resposta imediata, escreva-nos por WhatsApp",
+    "thanksMessage": "Obrigada pela sua mensagem.",
+    "sending": "Enviando...",
+    "errors": {
+      "required": "Campo obrigatório",
+      "emailInvalid": "Introduza um email válido",
+      "nameMin": "Mínimo 2 caracteres",
+      "messageMin": "Escreva pelo menos 10 caracteres"
+    }
+  },
+  "footer": {
+    "brand": "Cílios Lloret",
+    "tagline": "Extensões de cílios em Lloret de Mar",
+    "cta": "Reservar por WhatsApp"
+  }
+}

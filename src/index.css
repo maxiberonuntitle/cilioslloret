@@ -1,0 +1,116 @@
+@import "tailwindcss";
+
+/* ============================================
+   CÍLIOS LLORET - Design System
+   Luxury Beauty | Alta Conversión
+   ============================================ */
+
+:root {
+  --color-black: #0a0a0a;
+  --color-black-soft: #141414;
+  --color-gold: #c9a962;
+  --color-gold-light: #e5d4a1;
+  --color-champagne: #f5f0e6;
+  --color-champagne-dark: #e8e0d0;
+  --color-gray-soft: #a3a3a3;
+  --color-gray-muted: #737373;
+  --color-white: #fafafa;
+  --color-whatsapp: #25d366;
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'DM Sans', Inter, system-ui, sans-serif;
+  --font-logo: 'Cormorant Garamond', Georgia, serif;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-black);
+  color: var(--color-champagne);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-logo {
+  font-family: var(--font-logo);
+}
+
+.glass {
+  background: rgba(20, 20, 20, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+/* Contenedor con aire - evita elementos pegados a bordes */
+.section-container {
+  width: 100%;
+  max-width: 72rem;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .section-container {
+    padding-left: 2.5rem;
+    padding-right: 2.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .section-container {
+    padding-left: 5rem;
+    padding-right: 5rem;
+  }
+}
+
+/* Espacio entre título de sección y contenido */
+.section-title-spacing {
+  margin-bottom: 5rem;
+}
+
+@media (min-width: 640px) {
+  .section-title-spacing {
+    margin-bottom: 7rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .section-title-spacing {
+    margin-bottom: 9rem;
+  }
+}
+
+/* Secciones con aire vertical */
+.section-spacing {
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+}
+
+@media (min-width: 640px) {
+  .section-spacing {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .section-spacing {
+    padding-top: 7rem;
+    padding-bottom: 7rem;
+  }
+}
