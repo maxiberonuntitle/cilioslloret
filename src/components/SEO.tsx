@@ -17,19 +17,22 @@ interface SEOProps {
 }
 
 export function SEO({
-  title = 'Extensiones de Pestañas Premium | Cílios Lloret - Lloret de Mar',
-  description = 'Realza tu mirada con extensiones de pestañas premium en Lloret de Mar, Costa Brava. Atención personalizada, trabajo a domicilio. Reserva tu cita por WhatsApp.',
+  title,
+  description,
   image = DEFAULT_IMAGE,
   lang,
 }: SEOProps) {
-  const { i18n } = useTranslation()
+  const { t, i18n } = useTranslation()
   const currentLang = lang ?? i18n.language
+  const seoTitle = title ?? t('seo.title')
+  const seoDescription = description ?? t('seo.description')
+  const seoKeywords = t('seo.keywords')
 
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
     name: 'Cílios Lloret',
-    description: description,
+    description: seoDescription,
     url: SITE_URL,
     telephone: '+34601877214',
     address: {
@@ -54,23 +57,23 @@ export function SEO({
   return (
     <Helmet>
       <html lang={currentLang} />
-      <title>{title}</title>
-      <meta name="description" content={description} />
-      <meta name="keywords" content="extensiones de pestañas, Lloret de Mar, Costa Brava, pestañas volumen, Vanessa Gonçalvez, beauty" />
+      <title>{seoTitle}</title>
+      <meta name="description" content={seoDescription} />
+      <meta name="keywords" content={seoKeywords} />
       <meta name="robots" content="index, follow" />
 
       {/* Open Graph - WhatsApp */}
       <meta property="og:type" content="website" />
       <meta property="og:url" content={SITE_URL} />
-      <meta property="og:title" content={title} />
-      <meta property="og:description" content={description} />
+      <meta property="og:title" content={seoTitle} />
+      <meta property="og:description" content={seoDescription} />
       <meta property="og:image" content={image} />
       <meta property="og:locale" content={currentLang === 'es' ? 'es_ES' : currentLang === 'ca' ? 'ca_ES' : 'pt_PT'} />
 
       {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:title" content={title} />
-      <meta name="twitter:description" content={description} />
+      <meta name="twitter:title" content={seoTitle} />
+      <meta name="twitter:description" content={seoDescription} />
       <meta name="twitter:image" content={image} />
 
       {/* Schema.org */}

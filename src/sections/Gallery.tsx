@@ -74,19 +74,19 @@ export function Gallery() {
               <div className="relative aspect-[4/3] bg-[#1a1a1a]">
                 <img
                   src={item.after}
-                  alt={`Resultado ${item.id}`}
+                  alt={t('gallery.resultAlt', { id: item.id })}
                   className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
                   <span className="rounded-lg bg-[#c9a962]/90 px-4 py-2 text-sm font-medium text-black">
-                    Ver antes/después
+                    {t('gallery.viewBeforeAfter')}
                   </span>
                 </div>
               </div>
               <div className="flex border-t border-white/5 p-3">
-                <span className="text-xs text-[#737373]">Antes</span>
+                <span className="text-xs text-[#737373]">{t('gallery.before')}</span>
                 <span className="mx-2 text-[#737373]">→</span>
-                <span className="text-xs text-[#c9a962]">Después</span>
+                <span className="text-xs text-[#c9a962]">{t('gallery.after')}</span>
               </div>
             </motion.div>
           ))}
@@ -113,24 +113,24 @@ export function Gallery() {
               <button
                 onClick={() => setLightboxIndex(null)}
                 className="absolute -top-12 right-0 rounded-lg p-2 text-white hover:bg-white/10"
-                aria-label="Cerrar"
+                aria-label={t('gallery.close')}
               >
                 <X className="h-8 w-8" />
               </button>
               <div className="grid gap-4 sm:grid-cols-2">
                 <div>
-                  <p className="mb-2 text-sm text-[#a3a3a3]">Antes</p>
+                  <p className="mb-2 text-sm text-[#a3a3a3]">{t('gallery.before')}</p>
                   <img
                     src={galleryItems[lightboxIndex].before}
-                    alt="Antes"
+                    alt={t('gallery.before')}
                     className="rounded-xl"
                   />
                 </div>
                 <div>
-                  <p className="mb-2 text-sm text-[#c9a962]">Después</p>
+                  <p className="mb-2 text-sm text-[#c9a962]">{t('gallery.after')}</p>
                   <img
                     src={galleryItems[lightboxIndex].after}
-                    alt="Después"
+                    alt={t('gallery.after')}
                     className="rounded-xl"
                   />
                 </div>

@@ -92,7 +92,7 @@ export function Navbar() {
             <button
               onClick={() => setMobileOpen(true)}
               className="rounded-lg p-3 text-[#c9a962] hover:bg-[#c9a962]/10"
-              aria-label="Abrir menú"
+              aria-label={t('nav.openMenu')}
             >
               <Menu className="h-7 w-7" />
             </button>
@@ -123,7 +123,7 @@ export function Navbar() {
                 <button
                   onClick={() => setMobileOpen(false)}
                   className="rounded-lg p-2 text-[#f5f0e6] hover:bg-white/5"
-                  aria-label="Cerrar menú"
+                  aria-label={t('nav.closeMenu')}
                 >
                   <X className="h-6 w-6" />
                 </button>

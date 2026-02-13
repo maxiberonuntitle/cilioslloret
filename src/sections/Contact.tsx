@@ -42,7 +42,7 @@ function ShareContactButton({ t }: { t: (key: string) => string }) {
     if (navigator.share && (navigator.canShare?.({ files: [file] }) ?? true)) {
       try {
         await navigator.share({
-          title: 'Cílios Lloret - Tarjeta de contacto',
+          title: t('contact.shareTitle'),
           text: `${cardData.brand} · ${cardData.whatsapp}`,
           files: [file],
         })
@@ -157,7 +157,7 @@ export function Contact() {
                     <User className="h-6 w-6 text-[#c9a962]" />
                   </div>
                   <div>
-                    <p className="text-sm text-[#a3a3a3]">Nombre</p>
+                    <p className="text-sm text-[#a3a3a3]">{t('contact.fieldName')}</p>
                     <p className="font-semibold text-[#f5f0e6]">{t('contact.name')}</p>
                   </div>
                 </div>
@@ -166,7 +166,7 @@ export function Contact() {
                     <MessageCircle className="h-6 w-6 text-[#25d366]" />
                   </div>
                   <div>
-                    <p className="text-sm text-[#a3a3a3]">WhatsApp</p>
+                    <p className="text-sm text-[#a3a3a3]">{t('contact.fieldWhatsApp')}</p>
                     <a
                       href={getWhatsAppUrl()}
                       target="_blank"
@@ -182,7 +182,7 @@ export function Contact() {
                     <MapPin className="h-6 w-6 text-[#c9a962]" />
                   </div>
                   <div>
-                    <p className="text-sm text-[#a3a3a3]">Ubicación</p>
+                    <p className="text-sm text-[#a3a3a3]">{t('contact.fieldLocation')}</p>
                     <p className="font-semibold text-[#f5f0e6]">{t('contact.location')}</p>
                   </div>
                 </div>
@@ -321,7 +321,10 @@ export function Contact() {
                   className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#c9a962] px-6 py-3.5 font-semibold text-black transition-all hover:bg-[#e5d4a1] hover:scale-[1.01] active:scale-[0.99] disabled:scale-100 disabled:cursor-not-allowed disabled:opacity-70"
                 >
                   {loading ? (
-                    <span className="inline-block h-5 w-5 animate-spin rounded-full border-2 border-black/30 border-t-black" />
+                    <>
+                      <span className="inline-block h-5 w-5 animate-spin rounded-full border-2 border-black/30 border-t-black" />
+                      {t('contact.sending')}
+                    </>
                   ) : (
                     <>
                       <Send className="h-5 w-5" />

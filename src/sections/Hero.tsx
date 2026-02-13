@@ -30,7 +30,7 @@ export function Hero() {
         <div className="h-72 w-72 overflow-hidden rounded-full border border-[#c9a962]/20">
           <img
             src="https://images.unsplash.com/photo-1716973004922-1f7d57fe265c?w=600&q=80"
-            alt="Extensiones de pestañas"
+            alt={t('hero.imageAlt')}
             className="h-full w-full object-cover opacity-25"
           />
         </div>
@@ -107,7 +107,7 @@ export function Hero() {
           <div className="h-48 w-48 overflow-hidden rounded-full border border-[#c9a962]/20 sm:h-56 sm:w-56">
             <img
               src="https://images.unsplash.com/photo-1716973004922-1f7d57fe265c?w=600&q=80"
-              alt="Extensiones de pestañas"
+              alt={t('hero.imageAlt')}
               className="h-full w-full object-cover opacity-25"
             />
           </div>
