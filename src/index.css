@@ -16,8 +16,8 @@
   --color-gray-muted: #737373;
   --color-white: #fafafa;
   --color-whatsapp: #25d366;
-  --font-display: 'Playfair Display', Georgia, serif;
-  --font-body: 'DM Sans', Inter, system-ui, sans-serif;
+  --font-display: 'Cormorant', Georgia, serif;
+  --font-body: 'Nunito Sans', system-ui, sans-serif;
   --font-logo: 'Cormorant Garamond', Georgia, serif;
 }
 
@@ -75,6 +75,13 @@ body {
   .section-container {
     padding-left: 5rem;
     padding-right: 5rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .section-container {
+    padding-left: 6rem;
+    padding-right: 6rem;
   }
 }
 

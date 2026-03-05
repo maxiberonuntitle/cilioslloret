@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://cilioslloret.netlify.app/sitemap.xml

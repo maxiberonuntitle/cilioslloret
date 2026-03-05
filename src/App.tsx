@@ -5,6 +5,7 @@
 
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { HelmetProvider } from 'react-helmet-async'
+import { ScrollLashProvider } from '@/hooks/useScrollLash'
 import { Navbar } from '@/components/Navbar'
 import { Footer } from '@/components/Footer'
 import { WhatsAppButton } from '@/components/WhatsAppButton'
@@ -15,15 +16,17 @@ function App() {
   return (
     <HelmetProvider>
       <BrowserRouter>
-        <SEO />
-        <Navbar />
-        <main className="overflow-x-hidden">
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-          </Routes>
-        </main>
-        <Footer />
-        <WhatsAppButton variant="floating" />
+        <ScrollLashProvider>
+          <SEO />
+          <Navbar />
+          <main className="overflow-x-hidden">
+            <Routes>
+              <Route path="/" element={<HomePage />} />
+            </Routes>
+          </main>
+          <Footer />
+          <WhatsAppButton variant="floating" />
+        </ScrollLashProvider>
       </BrowserRouter>
     </HelmetProvider>
   )

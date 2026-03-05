@@ -19,6 +19,9 @@ function buildPdfDoc(data: ContactCardData) {
     format: [85, 55], // Tarjeta de visita estándar
   })
 
+  // Márgenes internos (aire desde los bordes)
+  const margin = 6
+
   // Fondo negro
   doc.setFillColor(10, 10, 10)
   doc.rect(0, 0, 85, 55, 'F')
@@ -26,51 +29,51 @@ function buildPdfDoc(data: ContactCardData) {
   // Borde dorado sutil
   doc.setDrawColor(201, 169, 98)
   doc.setLineWidth(0.3)
-  doc.rect(2, 2, 81, 51)
+  doc.rect(margin, margin, 85 - margin * 2, 55 - margin * 2)
 
   // Línea decorativa superior
   doc.setDrawColor(201, 169, 98)
   doc.setLineWidth(0.5)
-  doc.line(10, 8, 75, 8)
+  doc.line(margin + 4, margin + 4, 85 - margin - 4, margin + 4)
 
   // Marca - Cílios Lloret (dorado, cursiva simulada)
   doc.setTextColor(201, 169, 98)
   doc.setFontSize(14)
   doc.setFont('helvetica', 'italic')
-  doc.text(data.brand, 42.5, 18, { align: 'center' })
+  doc.text(data.brand, 42.5, margin + 12, { align: 'center' })
 
   // Tagline
   doc.setTextColor(163, 163, 163)
   doc.setFontSize(6)
   doc.setFont('helvetica', 'normal')
-  doc.text(data.tagline, 42.5, 23, { align: 'center' })
+  doc.text(data.tagline, 42.5, margin + 17, { align: 'center' })
 
   // Línea separadora
   doc.setDrawColor(201, 169, 98)
   doc.setLineWidth(0.2)
-  doc.line(15, 26, 70, 26)
+  doc.line(margin + 6, margin + 20, 85 - margin - 6, margin + 20)
 
   // Nombre
   doc.setTextColor(201, 169, 98)
   doc.setFontSize(8)
   doc.setFont('helvetica', 'bold')
-  doc.text(data.name, 42.5, 32, { align: 'center' })
+  doc.text(data.name, 42.5, margin + 27, { align: 'center' })
 
   // WhatsApp
   doc.setTextColor(37, 211, 102) // Verde WhatsApp
   doc.setFontSize(10)
-  doc.text(data.whatsapp, 42.5, 38, { align: 'center' })
+  doc.text(data.whatsapp, 42.5, margin + 33, { align: 'center' })
 
   // Ubicación
   doc.setTextColor(245, 240, 230)
   doc.setFontSize(8)
   doc.setFont('helvetica', 'normal')
-  doc.text(data.location, 42.5, 44, { align: 'center' })
+  doc.text(data.location, 42.5, margin + 37, { align: 'center' })
 
   // Línea inferior decorativa
   doc.setDrawColor(201, 169, 98)
   doc.setLineWidth(0.3)
-  doc.line(15, 50, 70, 50)
+  doc.line(margin + 6, 55 - margin - 5, 85 - margin - 6, 55 - margin - 5)
 
   return doc
 }

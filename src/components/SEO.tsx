@@ -6,8 +6,8 @@
 import { Helmet } from 'react-helmet-async'
 import { useTranslation } from 'react-i18next'
 
-const SITE_URL = 'https://cilioslloret.com'
-const DEFAULT_IMAGE = `${SITE_URL}/og-image.jpg`
+const SITE_URL = 'https://cilioslloret.netlify.app'
+const DEFAULT_IMAGE = `${SITE_URL}/og-image.png`
 
 interface SEOProps {
   title?: string
@@ -34,6 +34,8 @@ export function SEO({
     name: 'Cílios Lloret',
     description: seoDescription,
     url: SITE_URL,
+    image,
+    inLanguage: ['pt-BR', 'es', 'ca'],
     telephone: '+34601877214',
     address: {
       '@type': 'PostalAddress',
@@ -54,6 +56,11 @@ export function SEO({
     },
   }
 
+  const ogLocale =
+    currentLang === 'pt' ? 'pt_BR' :
+    currentLang === 'es' ? 'es_ES' :
+    currentLang === 'ca' ? 'ca_ES' : 'pt_BR'
+
   return (
     <Helmet>
       <html lang={currentLang} />
@@ -62,13 +69,22 @@ export function SEO({
       <meta name="keywords" content={seoKeywords} />
       <meta name="robots" content="index, follow" />
 
+      {/* Hreflang - Português (Brasil), Español, Català */}
+      <link rel="alternate" hrefLang="pt-BR" href={`${SITE_URL}/`} />
+      <link rel="alternate" hrefLang="es" href={`${SITE_URL}/`} />
+      <link rel="alternate" hrefLang="ca" href={`${SITE_URL}/`} />
+      <link rel="alternate" hrefLang="x-default" href={`${SITE_URL}/`} />
+
       {/* Open Graph - WhatsApp */}
       <meta property="og:type" content="website" />
       <meta property="og:url" content={SITE_URL} />
       <meta property="og:title" content={seoTitle} />
       <meta property="og:description" content={seoDescription} />
       <meta property="og:image" content={image} />
-      <meta property="og:locale" content={currentLang === 'es' ? 'es_ES' : currentLang === 'ca' ? 'ca_ES' : 'pt_PT'} />
+      <meta property="og:locale" content={ogLocale} />
+      <meta property="og:locale:alternate" content="pt_BR" />
+      <meta property="og:locale:alternate" content="es_ES" />
+      <meta property="og:locale:alternate" content="ca_ES" />
 
       {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />

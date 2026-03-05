@@ -25,7 +25,7 @@ export function WhatsAppButton({
 
   if (variant === 'floating') {
     return (
-      <div className="fixed bottom-8 right-8 z-50 flex flex-col items-end gap-3">
+      <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-4 sm:bottom-8 sm:right-8 sm:gap-5">
         <ScrollToTop />
         <div className="relative">
           {/* Anillos de pulso */}
@@ -33,20 +33,20 @@ export function WhatsAppButton({
             className="absolute inset-0 rounded-full border-2 border-[#25d366]"
             animate={{ scale: [1, 1.5, 1.5], opacity: [0.4, 0, 0] }}
             transition={{ duration: 2, repeat: Infinity, repeatDelay: 2 }}
-            style={{ top: -4, left: -4, right: -4, bottom: -4 }}
+            style={{ top: -6, left: -6, right: -6, bottom: -6 }}
           />
           <motion.div
             className="absolute inset-0 rounded-full border-2 border-[#25d366]"
             animate={{ scale: [1, 1.5, 1.5], opacity: [0.4, 0, 0] }}
             transition={{ duration: 2, repeat: Infinity, repeatDelay: 2, delay: 1 }}
-            style={{ top: -4, left: -4, right: -4, bottom: -4 }}
+            style={{ top: -6, left: -6, right: -6, bottom: -6 }}
           />
 
           <motion.a
           href={href}
           target="_blank"
           rel="noopener noreferrer"
-          className={`relative flex items-center gap-2 rounded-full bg-[#25d366] px-5 py-3 text-white shadow-xl shadow-[#25d366]/50 ring-4 ring-[#25d366]/20 ${className}`}
+          className={`relative flex items-center gap-3 rounded-full bg-[#25d366] px-6 py-4 text-white shadow-xl shadow-[#25d366]/50 ring-4 ring-[#25d366]/20 sm:gap-3.5 sm:px-7 sm:py-4 ${className}`}
           initial={{ scale: 0, opacity: 0, y: 30 }}
           animate={{
             scale: [0, 1.05, 1],
@@ -76,8 +76,9 @@ export function WhatsAppButton({
           <motion.span
             animate={{ scale: [1, 1.15, 1] }}
             transition={{ duration: 1.2, repeat: Infinity, repeatDelay: 1.8 }}
+            className="flex items-center justify-center"
           >
-            <MessageCircle className="h-6 w-6" />
+            <MessageCircle className="h-6 w-6 sm:h-7 sm:w-7" />
           </motion.span>
           {showLabel && (
             <span className="hidden font-medium sm:inline">{t('nav.cta')}</span>

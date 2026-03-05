@@ -8,7 +8,7 @@ import { useTranslation } from 'react-i18next'
 import { ArrowRight, Eye, Layers, Sparkles } from 'lucide-react'
 import { getWhatsAppUrl } from '@/lib/constants'
 import { fadeInUp, viewportConfig } from '@/lib/animations'
-import { LashPattern } from '@/components/LashPattern'
+import { LashPatternSides } from '@/components/LashPatternSides'
 
 const services = [
   { key: 'extensions', icon: Eye },
@@ -21,7 +21,7 @@ export function Services() {
 
   return (
     <section id="servicios" className="section-spacing relative">
-      <LashPattern opacity={0.055} />
+      <LashPatternSides opacity={0.055} />
       <div className="section-container relative mx-auto flex flex-col items-center">
         <div className="section-title-spacing">
           <motion.div
@@ -38,11 +38,11 @@ export function Services() {
           </motion.div>
         </div>
 
-        <div className="grid w-full max-w-4xl grid-cols-1 justify-items-center gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+        <div className="grid w-full max-w-4xl grid-cols-1 justify-items-center gap-8 sm:grid-cols-2 sm:gap-10 lg:grid-cols-3 lg:gap-12">
           {services.map(({ key, icon: Icon }, i) => (
             <motion.div
               key={key}
-              className="group relative flex aspect-square min-h-[180px] max-w-[240px] flex-col items-center justify-center overflow-hidden rounded-2xl border border-white/[0.06] bg-gradient-to-b from-[#1a1a1a] to-[#141414] p-5 text-center shadow-lg transition-all duration-300 hover:border-[#c9a962]/30 hover:shadow-[0_0_40px_-10px_rgba(201,169,98,0.2)] sm:min-h-[200px] sm:max-w-[260px] sm:p-6"
+              className="group relative flex aspect-square min-h-[180px] max-w-[240px] flex-col items-center justify-center overflow-hidden rounded-2xl border border-white/[0.06] bg-gradient-to-b from-[#1a1a1a] to-[#141414] p-6 text-center shadow-lg transition-all duration-300 hover:-translate-y-1 hover:border-[#c9a962]/40 hover:shadow-[0_0_50px_-10px_rgba(201,169,98,0.25)] sm:min-h-[200px] sm:max-w-[260px] sm:p-8"
               variants={fadeInUp}
               initial="hidden"
               whileInView="visible"
@@ -52,14 +52,14 @@ export function Services() {
               {/* Línea decorativa superior */}
               <div className="absolute left-0 right-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#c9a962]/40 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
 
-              <div className="mb-4 inline-flex w-fit rounded-xl bg-[#c9a962]/10 p-3 ring-1 ring-[#c9a962]/10 transition-all duration-300 group-hover:bg-[#c9a962]/15 group-hover:ring-[#c9a962]/20">
-                <Icon className="h-8 w-8 text-[#c9a962]" strokeWidth={1.5} />
+              <div className="mb-5 inline-flex w-fit rounded-xl bg-[#c9a962]/10 p-4 ring-1 ring-[#c9a962]/10 transition-all duration-300 group-hover:bg-[#c9a962]/20 group-hover:ring-[#c9a962]/30 group-hover:scale-110 sm:mb-6 sm:p-5">
+                <Icon className="h-8 w-8 text-[#c9a962] transition-colors duration-300 group-hover:text-[#e5d4a1] sm:h-9 sm:w-9" strokeWidth={1.5} />
               </div>
 
               <h3 className="font-display text-lg font-semibold text-[#f5f0e6]">
                 {t(`services.${key}`)}
               </h3>
-              <p className="mt-2 text-[13px] leading-relaxed text-[#a3a3a3]">
+              <p className="mt-3 text-[13px] leading-relaxed text-[#a3a3a3] sm:mt-4">
                 {t(`services.${key}Desc`)}
               </p>
 
@@ -67,7 +67,7 @@ export function Services() {
                 href={getWhatsAppUrl(`Hola, me interesa el servicio de ${t(`services.${key}`)} en Cílios Lloret`)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="mt-5 inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#c9a962]/10 px-4 py-2.5 text-xs font-semibold text-[#c9a962] ring-1 ring-[#c9a962]/20 transition-all duration-300 hover:bg-[#c9a962] hover:text-black hover:ring-[#c9a962]"
+                className="mt-6 inline-flex items-center justify-center gap-2 rounded-xl bg-[#c9a962]/10 px-5 py-3 text-xs font-semibold text-[#c9a962] ring-1 ring-[#c9a962]/20 transition-all duration-300 hover:scale-[1.02] hover:bg-[#c9a962] hover:text-black hover:ring-[#c9a962] hover:shadow-[0_0_20px_-5px_rgba(201,169,98,0.4)] sm:mt-7 sm:px-6 sm:py-3.5"
               >
                 {t('services.cta')}
                 <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />

@@ -1,7 +1,7 @@
 /**
  * Hero - Sección de ventas principal
  * Headline emocional + CTA WhatsApp + Trust cues
- * Iconos alineados con sección Trust (User, Award, MapPin)
+ * Iconos de confianza (User, MapPin)
  */
 
 import { motion } from 'framer-motion'
@@ -27,11 +27,11 @@ export function Hero() {
 
       {/* Imagen decorativa - desktop: derecha */}
       <div className="absolute right-8 top-1/2 hidden -translate-y-1/2 lg:block">
-        <div className="h-72 w-72 overflow-hidden rounded-full border border-[#c9a962]/20">
+        <div className="group/img h-72 w-72 overflow-hidden rounded-full border border-[#c9a962]/20 transition-all duration-300 hover:border-[#c9a962]/40 hover:shadow-[0_0_30px_-5px_rgba(201,169,98,0.3)]">
           <img
             src="https://images.unsplash.com/photo-1716973004922-1f7d57fe265c?w=600&q=80"
             alt={t('hero.imageAlt')}
-            className="h-full w-full object-cover opacity-25"
+            className="h-full w-full object-cover opacity-25 transition-all duration-500 group-hover/img:scale-105 group-hover/img:opacity-35"
           />
         </div>
       </div>
@@ -57,12 +57,12 @@ export function Hero() {
         </motion.p>
 
         <motion.div
-          className="flex items-center gap-2 text-[#c9a962]"
+          className="flex cursor-default items-center gap-3 text-[#c9a962] transition-colors duration-300 hover:text-[#e5d4a1]"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.35 }}
         >
-          <MapPin className="h-4 w-4 shrink-0" />
+          <MapPin className="h-5 w-5 shrink-0 sm:h-5 sm:w-5" />
           <span className="text-sm font-medium sm:text-base">{t('hero.location')}</span>
         </motion.div>
 
@@ -81,7 +81,7 @@ export function Hero() {
           {trustIcons.map(({ key, icon: Icon }) => (
             <motion.div
               key={key}
-              className="flex flex-col items-center gap-4 rounded-2xl border border-white/5 bg-white/[0.02] px-10 py-8 transition-colors duration-300 hover:border-[#c9a962]/20 sm:px-12 sm:py-10"
+              className="group relative flex flex-col items-center gap-5 rounded-2xl border border-white/5 bg-white/[0.02] px-12 py-10 transition-all duration-300 hover:border-[#c9a962]/30 hover:bg-white/[0.04] hover:shadow-[0_0_30px_-10px_rgba(201,169,98,0.15)] sm:px-14 sm:py-12 sm:gap-6"
               variants={{
                 hidden: { opacity: 0, y: 30, scale: 0.95 },
                 visible: {
@@ -92,8 +92,8 @@ export function Hero() {
                 },
               }}
             >
-              <div className="inline-flex rounded-xl bg-[#c9a962]/10 p-3">
-                <Icon className="h-8 w-8 text-[#c9a962]" />
+              <div className="inline-flex rounded-xl bg-[#c9a962]/10 p-4 transition-all duration-300 group-hover:bg-[#c9a962]/15 group-hover:scale-105 sm:p-5">
+                <Icon className="h-8 w-8 text-[#c9a962] transition-all duration-300 group-hover:text-[#e5d4a1] sm:h-9 sm:w-9" />
               </div>
               <span className="text-sm font-medium text-[#f5f0e6]/90 sm:text-base">
                 {t(`hero.${key}`)}
@@ -104,11 +104,11 @@ export function Hero() {
 
         {/* Imagen circular - mobile/tablet: debajo de las cards */}
         <div className="mt-12 flex justify-center lg:hidden">
-          <div className="h-48 w-48 overflow-hidden rounded-full border border-[#c9a962]/20 sm:h-56 sm:w-56">
+          <div className="group/img-mob h-48 w-48 overflow-hidden rounded-full border border-[#c9a962]/20 transition-all duration-300 hover:border-[#c9a962]/40 sm:h-56 sm:w-56">
             <img
               src="https://images.unsplash.com/photo-1716973004922-1f7d57fe265c?w=600&q=80"
               alt={t('hero.imageAlt')}
-              className="h-full w-full object-cover opacity-25"
+              className="h-full w-full object-cover opacity-25 transition-all duration-500 group-hover/img-mob:scale-105 group-hover/img-mob:opacity-35"
             />
           </div>
         </div>

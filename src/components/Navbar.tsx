@@ -49,7 +49,7 @@ export function Navbar() {
             <div className="shrink-0 pl-4 sm:pl-6 lg:pl-8">
               <Link
                 to="/"
-                className={`font-logo block italic font-semibold text-[#c9a962] transition-all duration-300 ${
+                className={`font-logo block italic font-semibold text-[#c9a962] transition-all duration-300 hover:text-[#e5d4a1] hover:scale-105 ${
                   scrolled ? 'text-2xl sm:text-3xl' : 'text-3xl sm:text-4xl'
                 }`}
               >
@@ -63,7 +63,7 @@ export function Navbar() {
               <a
                 key={key}
                 href={href}
-                className="text-base font-medium text-[#f5f0e6]/90 transition-colors duration-300 hover:text-[#c9a962]"
+                className="text-base font-medium text-[#f5f0e6]/90 transition-all duration-300 hover:scale-105 hover:text-[#c9a962]"
               >
                 {t(`nav.${key}`)}
               </a>
@@ -73,15 +73,15 @@ export function Navbar() {
 
           {/* Mobile: selector idioma + menú hamburguesa */}
           <div className="flex items-center gap-2 md:hidden">
-            <div className="flex gap-1 rounded-lg border border-[#c9a962]/40 bg-[#c9a962]/5 p-1.5">
+            <div className="flex gap-1.5 rounded-lg border border-[#c9a962]/40 bg-[#c9a962]/5 p-2">
               {languages.map(({ code, label }) => (
                 <button
                   key={code}
                   onClick={() => i18n.changeLanguage(code)}
-                  className={`rounded-md px-2.5 py-1.5 text-xs font-medium uppercase transition-all ${
+                  className={`rounded-md px-3 py-2 text-xs font-medium uppercase transition-all duration-200 ${
                     i18n.language === code
                       ? 'bg-[#c9a962] text-black'
-                      : 'text-[#c9a962]/70 hover:text-[#c9a962]'
+                      : 'text-[#c9a962]/70 hover:scale-105 hover:bg-[#c9a962]/10 hover:text-[#c9a962]'
                   }`}
                   title={label}
                 >
@@ -91,7 +91,7 @@ export function Navbar() {
             </div>
             <button
               onClick={() => setMobileOpen(true)}
-              className="rounded-lg p-3 text-[#c9a962] hover:bg-[#c9a962]/10"
+              className="rounded-lg p-3.5 text-[#c9a962] transition-all duration-200 hover:scale-110 hover:bg-[#c9a962]/10 sm:p-4"
               aria-label={t('nav.openMenu')}
             >
               <Menu className="h-7 w-7" />
@@ -122,7 +122,7 @@ export function Navbar() {
                 <LanguageSelector />
                 <button
                   onClick={() => setMobileOpen(false)}
-                  className="rounded-lg p-2 text-[#f5f0e6] hover:bg-white/5"
+                  className="rounded-lg p-2 text-[#f5f0e6] transition-all duration-200 hover:scale-110 hover:bg-white/5"
                   aria-label={t('nav.closeMenu')}
                 >
                   <X className="h-6 w-6" />
@@ -134,7 +134,7 @@ export function Navbar() {
                   key={key}
                   href={href}
                   onClick={() => setMobileOpen(false)}
-                  className="font-display text-2xl text-[#f5f0e6] transition-colors duration-300 hover:text-[#c9a962]"
+                  className="font-display text-2xl text-[#f5f0e6] transition-all duration-300 hover:scale-105 hover:text-[#c9a962]"
                 >
                   {t(`nav.${key}`)}
                 </a>

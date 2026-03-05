@@ -7,9 +7,9 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
-import { Download, MessageCircle, MapPin, Send, Share2, User } from 'lucide-react'
+import { MessageCircle, MapPin, Send, Share2, User } from 'lucide-react'
 import { getWhatsAppUrl } from '@/lib/constants'
-import { generateContactCardPdf, getContactCardPdfBlob } from '@/lib/generateContactCardPdf'
+import { getContactCardPdfBlob } from '@/lib/generateContactCardPdf'
 import { sendContactEmail } from '@/lib/emailService'
 import { fadeInUp, slideInLeft, slideInRight, viewportConfig } from '@/lib/animations'
 import { LashPattern } from '@/components/LashPattern'
@@ -21,7 +21,7 @@ interface FormData {
 }
 
 const inputBase =
-  'w-full rounded-xl border bg-[#141414] px-4 py-3.5 text-[#f5f0e6] placeholder-[#737373] transition-all duration-200 resize-none'
+  'w-full rounded-xl border bg-[#141414] px-5 py-4 text-[#f5f0e6] placeholder-[#737373] transition-all duration-200 resize-none hover:border-white/20 sm:px-6 sm:py-4'
 
 function ShareContactButton({ t }: { t: (key: string) => string }) {
   const [shared, setShared] = useState(false)
@@ -49,10 +49,8 @@ function ShareContactButton({ t }: { t: (key: string) => string }) {
         setShared(true)
         setTimeout(() => setShared(false), 2000)
       } catch {
-        generateContactCardPdf(cardData)
+        // Usuario canceló o error al compartir - no hacer nada
       }
-    } else {
-      generateContactCardPdf(cardData)
     }
   }
 
@@ -60,33 +58,10 @@ function ShareContactButton({ t }: { t: (key: string) => string }) {
     <button
       type="button"
       onClick={handleShare}
-      className="inline-flex items-center gap-2 rounded-lg border border-white/10 px-4 py-2 text-sm font-medium text-[#a3a3a3] transition-all hover:border-[#c9a962]/30 hover:text-[#c9a962]"
+      className="flex w-full items-center justify-center gap-3 rounded-xl border border-[#c9a962]/30 bg-[#c9a962]/5 px-6 py-4 text-sm font-semibold text-[#c9a962] transition-all duration-300 hover:scale-[1.02] hover:border-[#c9a962]/50 hover:bg-[#c9a962]/10 hover:text-[#e5d4a1] sm:gap-3.5 sm:px-8 sm:py-4 sm:text-base"
     >
-      <Share2 className="h-4 w-4" />
+      <Share2 className="h-5 w-5 sm:h-6 sm:w-6" />
       {shared ? t('contact.shareSuccess') : t('contact.shareCard')}
-    </button>
-  )
-}
-
-function DownloadContactButton({ t }: { t: (key: string) => string }) {
-  const handleDownload = () => {
-    generateContactCardPdf({
-      name: t('contact.name'),
-      whatsapp: t('contact.whatsapp'),
-      location: t('contact.location'),
-      brand: t('footer.brand'),
-      tagline: t('footer.tagline'),
-    })
-  }
-
-  return (
-    <button
-      type="button"
-      onClick={handleDownload}
-      className="inline-flex items-center gap-2 rounded-lg border border-[#c9a962]/40 px-4 py-2 text-sm font-medium text-[#c9a962] transition-all hover:bg-[#c9a962]/10 hover:border-[#c9a962]/60"
-    >
-      <Download className="h-4 w-4" />
-      {t('contact.downloadCard')}
     </button>
   )
 }
@@ -137,7 +112,7 @@ export function Contact() {
           </motion.h2>
         </div>
 
-        <div className="grid w-full max-w-5xl grid-cols-1 items-center gap-16 lg:grid-cols-2 lg:items-start lg:gap-24">
+        <div className="grid w-full max-w-5xl grid-cols-1 items-center gap-14 sm:gap-20 lg:grid-cols-2 lg:items-start lg:gap-24">
           {/* Tarjeta de contacto - compartible */}
           <motion.div
             className="w-full max-w-md"
@@ -149,57 +124,62 @@ export function Contact() {
           >
             <div
               id="contact-card"
-              className="overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-[#1a1a1a] to-[#141414] shadow-xl"
+              className="group overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-[#1a1a1a] to-[#0f0f0f] shadow-xl shadow-black/20 transition-all duration-300 hover:border-[#c9a962]/25 hover:shadow-[0_0_50px_-15px_rgba(201,169,98,0.2)]"
             >
-              <div className="space-y-8 p-10 sm:p-12 lg:p-14">
-                <div className="flex items-center gap-5">
-                  <div className="rounded-xl bg-[#c9a962]/10 p-3">
-                    <User className="h-6 w-6 text-[#c9a962]" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-[#a3a3a3]">{t('contact.fieldName')}</p>
-                    <p className="font-semibold text-[#f5f0e6]">{t('contact.name')}</p>
-                  </div>
+              {/* Línea dorada superior */}
+              <div className="h-[2px] bg-gradient-to-r from-transparent via-[#c9a962]/60 to-transparent" />
+
+              <div className="space-y-12 p-16 sm:space-y-14 sm:p-20 lg:p-24">
+                {/* Marca destacada */}
+                <div className="text-center">
+                  <p className="font-logo text-xl italic font-semibold text-[#c9a962] sm:text-2xl">
+                    {t('footer.brand')}
+                  </p>
+                  <p className="mt-2 text-sm text-[#737373]">{t('footer.tagline')}</p>
                 </div>
-                <div className="flex items-center gap-5">
-                  <div className="rounded-xl bg-[#25d366]/10 p-3">
-                    <MessageCircle className="h-6 w-6 text-[#25d366]" />
+
+                {/* Datos de contacto */}
+                <div className="space-y-8">
+                  <div className="group/row flex items-center gap-6 transition-colors duration-300 hover:text-[#f5f0e6]">
+                    <div className="flex shrink-0 rounded-xl bg-[#c9a962]/10 p-4 transition-all duration-300 group-hover/row:bg-[#c9a962]/15 group-hover/row:scale-105 sm:p-5">
+                      <User className="h-6 w-6 text-[#c9a962] transition-colors duration-300 group-hover/row:text-[#e5d4a1] sm:h-7 sm:w-7" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-[#a3a3a3]">{t('contact.fieldName')}</p>
+                      <p className="font-semibold text-[#f5f0e6] text-lg">{t('contact.name')}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-sm text-[#a3a3a3]">{t('contact.fieldWhatsApp')}</p>
-                    <a
-                      href={getWhatsAppUrl()}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="font-semibold text-[#25d366] hover:underline"
-                    >
-                      {t('contact.whatsapp')}
-                    </a>
+                  <div className="group/row flex items-center gap-6 transition-colors duration-300 hover:text-[#f5f0e6]">
+                    <div className="flex shrink-0 rounded-xl bg-[#25d366]/10 p-4 transition-all duration-300 group-hover/row:bg-[#25d366]/20 group-hover/row:scale-105 sm:p-5">
+                      <MessageCircle className="h-6 w-6 text-[#25d366] transition-colors duration-300 group-hover/row:text-[#34e077] sm:h-7 sm:w-7" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-[#a3a3a3]">{t('contact.fieldWhatsApp')}</p>
+                      <a
+                        href={getWhatsAppUrl()}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="font-semibold text-[#25d366] text-lg transition-colors duration-200 hover:text-[#34e077] hover:underline"
+                      >
+                        {t('contact.whatsapp')}
+                      </a>
+                    </div>
                   </div>
-                </div>
-                <div className="flex items-center gap-5">
-                  <div className="rounded-xl bg-[#c9a962]/10 p-3">
-                    <MapPin className="h-6 w-6 text-[#c9a962]" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-[#a3a3a3]">{t('contact.fieldLocation')}</p>
-                    <p className="font-semibold text-[#f5f0e6]">{t('contact.location')}</p>
+                  <div className="group/row flex items-center gap-6 transition-colors duration-300 hover:text-[#f5f0e6]">
+                    <div className="flex shrink-0 rounded-xl bg-[#c9a962]/10 p-4 transition-all duration-300 group-hover/row:bg-[#c9a962]/15 group-hover/row:scale-105 sm:p-5">
+                      <MapPin className="h-6 w-6 text-[#c9a962] transition-colors duration-300 group-hover/row:text-[#e5d4a1] sm:h-7 sm:w-7" />
+                    </div>
+                    <div>
+                      <p className="text-sm text-[#a3a3a3]">{t('contact.fieldLocation')}</p>
+                      <p className="font-semibold text-[#f5f0e6] text-lg">{t('contact.location')}</p>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              {/* Pie de tarjeta con marca - estilo footer */}
-              <div className="flex flex-col items-center gap-5 border-t border-white/5 px-10 py-8 sm:px-12 lg:px-14">
-                <div className="text-center">
-                  <p className="font-logo text-sm italic font-semibold text-[#c9a962]">
-                    {t('footer.brand')}
-                  </p>
-                  <p className="mt-1 text-xs text-[#737373]">{t('footer.tagline')}</p>
-                </div>
-                <div className="flex flex-wrap items-center justify-center gap-3">
-                  <ShareContactButton t={t} />
-                  <DownloadContactButton t={t} />
-                </div>
+              {/* Pie con botón compartir */}
+              <div className="border-t border-white/5 px-16 py-12 sm:px-20 sm:py-14 lg:px-24 lg:py-16">
+                <ShareContactButton t={t} />
               </div>
             </div>
           </motion.div>
@@ -213,7 +193,7 @@ export function Contact() {
             viewport={viewportConfig}
             custom={1}
           >
-            <h3 className="font-display text-xl font-semibold text-[#c9a962]">
+            <h3 className="font-display text-xl font-semibold text-[#c9a962] sm:text-2xl">
               {t('contact.formTitle')}
             </h3>
             {submitted ? (
@@ -224,14 +204,14 @@ export function Contact() {
                   href={getWhatsAppUrl()}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-4 inline-flex items-center gap-2 text-[#25d366] hover:underline"
+                  className="mt-4 inline-flex items-center gap-2 text-[#25d366] transition-all duration-200 hover:scale-[1.02] hover:text-[#34e077] hover:underline"
                 >
                   <MessageCircle className="h-5 w-5" />
                   WhatsApp
                 </a>
               </div>
             ) : (
-              <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-5">
+              <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-6 sm:mt-10 sm:space-y-7">
                 {error && (
                   <div
                     className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3"
@@ -318,7 +298,7 @@ export function Contact() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#c9a962] px-6 py-3.5 font-semibold text-black transition-all hover:bg-[#e5d4a1] hover:scale-[1.01] active:scale-[0.99] disabled:scale-100 disabled:cursor-not-allowed disabled:opacity-70"
+                  className="flex w-full items-center justify-center gap-3 rounded-xl bg-[#c9a962] px-8 py-4 font-semibold text-black transition-all duration-300 hover:scale-[1.02] hover:bg-[#e5d4a1] hover:shadow-[0_0_25px_-5px_rgba(201,169,98,0.4)] active:scale-[0.99] disabled:scale-100 disabled:cursor-not-allowed disabled:opacity-70 sm:gap-3.5 sm:px-10 sm:py-4.5"
                 >
                   {loading ? (
                     <>
