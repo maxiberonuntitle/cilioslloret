@@ -59,11 +59,11 @@ export function Gallery() {
           </motion.div>
         </div>
 
-        <div className="grid w-full max-w-5xl grid-cols-1 justify-items-center gap-8 sm:grid-cols-2 sm:gap-10 lg:grid-cols-4 lg:gap-14">
+        <div className="grid w-full max-w-5xl grid-cols-1 justify-items-center gap-8 sm:grid-cols-2 sm:justify-items-stretch sm:gap-10 lg:grid-cols-4 lg:gap-14">
           {galleryItems.map((item, i) => (
             <motion.div
               key={item.id}
-              className="group w-full max-w-xs cursor-pointer overflow-hidden rounded-2xl border border-white/5 transition-all duration-300 hover:-translate-y-1 hover:border-[#c9a962]/30 hover:shadow-[0_0_30px_-10px_rgba(201,169,98,0.2)] sm:max-w-sm"
+              className="group w-full max-w-xs cursor-pointer overflow-hidden rounded-2xl border border-white/5 transition-all duration-300 hover:-translate-y-1 hover:border-white/20 hover:shadow-[0_0_30px_-10px_rgba(255,255,255,0.06)] sm:max-w-none"
               variants={fadeInUp}
               initial="hidden"
               whileInView="visible"
@@ -83,7 +83,7 @@ export function Gallery() {
                   </span>
                 </div>
               </div>
-              <div className="flex border-t border-white/5 p-4 transition-colors duration-300 group-hover:bg-white/[0.02] sm:p-5">
+              <div className="flex items-center border-t border-white/5 bg-transparent px-5 py-4 transition-colors duration-300 sm:px-6 sm:py-5">
                 <span className="text-xs text-[#737373] transition-colors duration-300 group-hover:text-[#a3a3a3]">{t('gallery.before')}</span>
                 <span className="mx-2 text-[#737373] transition-colors duration-300 group-hover:text-[#a3a3a3]">→</span>
                 <span className="text-xs text-[#c9a962] transition-colors duration-300 group-hover:text-[#e5d4a1]">{t('gallery.after')}</span>

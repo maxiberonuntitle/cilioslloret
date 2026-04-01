@@ -17,14 +17,8 @@ const navLinks = [
   { key: 'contact', href: '#contacto' },
 ] as const
 
-const languages = [
-  { code: 'pt', label: 'Português' },
-  { code: 'es', label: 'Español' },
-  { code: 'ca', label: 'Català' },
-] as const
-
 export function Navbar() {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
 
@@ -50,7 +44,9 @@ export function Navbar() {
               <Link
                 to="/"
                 className={`font-logo block italic font-semibold text-[#c9a962] transition-all duration-300 hover:text-[#e5d4a1] hover:scale-105 ${
-                  scrolled ? 'text-2xl sm:text-3xl' : 'text-3xl sm:text-4xl'
+                  scrolled
+                    ? 'text-[2rem] sm:text-3xl'
+                    : 'text-[2.25rem] sm:text-4xl'
                 }`}
               >
                 {t('nav.logo')}
@@ -68,30 +64,14 @@ export function Navbar() {
                 {t(`nav.${key}`)}
               </a>
             ))}
-            <LanguageSelector />
+            <LanguageSelector variant="icon" />
           </div>
 
-          {/* Mobile: selector idioma + menú hamburguesa */}
-          <div className="flex items-center gap-2 md:hidden">
-            <div className="flex gap-1.5 rounded-lg border border-[#c9a962]/40 bg-[#c9a962]/5 p-2">
-              {languages.map(({ code, label }) => (
-                <button
-                  key={code}
-                  onClick={() => i18n.changeLanguage(code)}
-                  className={`rounded-md px-3 py-2 text-xs font-medium uppercase transition-all duration-200 ${
-                    i18n.language === code
-                      ? 'bg-[#c9a962] text-black'
-                      : 'text-[#c9a962]/70 hover:scale-105 hover:bg-[#c9a962]/10 hover:text-[#c9a962]'
-                  }`}
-                  title={label}
-                >
-                  {code}
-                </button>
-              ))}
-            </div>
+          {/* Mobile: solo hamburguesa; idioma dentro del menú desplegable */}
+          <div className="flex items-center md:hidden">
             <button
               onClick={() => setMobileOpen(true)}
-              className="rounded-lg p-3.5 text-[#c9a962] transition-all duration-200 hover:scale-110 hover:bg-[#c9a962]/10 sm:p-4"
+              className="rounded-lg p-3.5 text-[#c9a962] transition-all duration-200 hover:scale-110 hover:bg-white/5 sm:p-4"
               aria-label={t('nav.openMenu')}
             >
               <Menu className="h-7 w-7" />

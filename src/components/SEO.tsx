@@ -82,9 +82,9 @@ export function SEO({
       <meta property="og:description" content={seoDescription} />
       <meta property="og:image" content={image} />
       <meta property="og:locale" content={ogLocale} />
-      <meta property="og:locale:alternate" content="pt_BR" />
-      <meta property="og:locale:alternate" content="es_ES" />
-      <meta property="og:locale:alternate" content="ca_ES" />
+      {currentLang !== 'pt' && <meta property="og:locale:alternate" content="pt_BR" />}
+      {currentLang !== 'es' && <meta property="og:locale:alternate" content="es_ES" />}
+      {currentLang !== 'ca' && <meta property="og:locale:alternate" content="ca_ES" />}
 
       {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />

@@ -50,16 +50,9 @@ src/
 
 ## 📧 Formulario de contacto
 
-Los mensajes se envían por email a **vanessagoncalves8384@gmail.com** mediante Web3Forms.
+Al enviar, se abre el **correo del visitante** con un mensaje ya redactado para **vanessagoncalves8384@gmail.com** (definido en `src/lib/contactMailto.ts`). No hace falta API key ni configuración en Netlify.
 
-**Configuración:**
-1. Ve a [web3forms.com](https://web3forms.com)
-2. Introduce el email `vanessagoncalves8384@gmail.com` y obtén tu Access Key
-3. Crea un archivo `.env` en la raíz con:
-   ```
-   VITE_WEB3FORMS_ACCESS_KEY=tu_access_key
-   ```
-4. Reinicia el servidor de desarrollo
+El visitante debe pulsar **Enviar** en su aplicación de correo; es el enfoque habitual en webs estáticas sin servidor.
 
 ## 📸 Galería
 

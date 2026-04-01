@@ -40,6 +40,16 @@ body {
   overflow-x: hidden;
 }
 
+/* Iconos SVG (p. ej. Lucide): sin fondo ni mancha en el área del vector */
+svg {
+  background-color: transparent;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
 .font-display {
   font-family: var(--font-display);
 }

@@ -27,7 +27,7 @@ export function Hero() {
 
       {/* Imagen decorativa - desktop: derecha */}
       <div className="absolute right-8 top-1/2 hidden -translate-y-1/2 lg:block">
-        <div className="group/img h-72 w-72 overflow-hidden rounded-full border border-[#c9a962]/20 transition-all duration-300 hover:border-[#c9a962]/40 hover:shadow-[0_0_30px_-5px_rgba(201,169,98,0.3)]">
+        <div className="group/img h-72 w-72 overflow-hidden rounded-full border border-white/15 transition-all duration-300 hover:border-white/28 hover:shadow-[0_0_30px_-5px_rgba(255,255,255,0.08)]">
           <img
             src="https://images.unsplash.com/photo-1716973004922-1f7d57fe265c?w=600&q=80"
             alt={t('hero.imageAlt')}
@@ -36,9 +36,9 @@ export function Hero() {
         </div>
       </div>
 
-      <div className="section-container relative mx-auto flex min-h-screen flex-col items-center justify-center gap-8 py-32 sm:gap-10 sm:py-40 lg:gap-12 lg:py-48">
+      <div className="section-container relative mx-auto flex min-h-screen w-full min-w-0 flex-col items-center justify-center gap-8 py-28 sm:gap-10 sm:py-40 lg:gap-12 lg:py-48">
         <motion.h1
-          className="font-display max-w-4xl text-4xl font-bold leading-tight text-[#f5f0e6] sm:text-5xl md:text-6xl lg:text-7xl"
+          className="font-display mx-auto w-full min-w-0 max-w-[min(100%,42rem)] text-balance text-center text-[clamp(1.75rem,5.2vw+0.65rem,3.75rem)] font-bold leading-[1.12] tracking-tight text-[#f5f0e6] sm:max-w-4xl sm:leading-[1.1] md:text-6xl md:leading-[1.08] lg:max-w-5xl lg:text-7xl lg:leading-[1.06]"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
@@ -48,7 +48,7 @@ export function Hero() {
         </motion.h1>
 
         <motion.p
-          className="max-w-2xl text-lg text-[#f5f0e6] sm:text-xl"
+          className="w-full max-w-2xl text-pretty text-center text-base leading-relaxed text-[#f5f0e6]/95 sm:text-lg sm:leading-relaxed md:text-xl"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
@@ -57,7 +57,7 @@ export function Hero() {
         </motion.p>
 
         <motion.div
-          className="flex cursor-default items-center gap-3 text-[#c9a962] transition-colors duration-300 hover:text-[#e5d4a1]"
+          className="flex max-w-full cursor-default flex-wrap items-center justify-center gap-x-2 gap-y-1 px-1 text-center text-[#c9a962] transition-colors duration-300 hover:text-[#e5d4a1] sm:gap-3"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.35 }}
@@ -68,7 +68,7 @@ export function Hero() {
 
         {/* Trust cues - Atención personalizada, Trabajo a domicilio */}
         <motion.div
-          className="mt-12 flex flex-wrap justify-center gap-10 sm:mt-16 sm:gap-14 lg:gap-20"
+          className="mt-12 flex w-full max-w-2xl flex-wrap justify-center gap-8 sm:mt-16 sm:max-w-none sm:gap-14 lg:gap-20"
           initial="hidden"
           animate="visible"
           variants={{
@@ -81,7 +81,7 @@ export function Hero() {
           {trustIcons.map(({ key, icon: Icon }) => (
             <motion.div
               key={key}
-              className="group relative flex flex-col items-center gap-5 rounded-2xl border border-white/5 bg-white/[0.02] px-12 py-10 transition-all duration-300 hover:border-[#c9a962]/30 hover:bg-white/[0.04] hover:shadow-[0_0_30px_-10px_rgba(201,169,98,0.15)] sm:px-14 sm:py-12 sm:gap-6"
+              className="group relative w-full min-w-0 max-w-[20rem] rounded-2xl bg-transparent transition-all duration-300 hover:shadow-[0_0_30px_-10px_rgba(255,255,255,0.06)] sm:w-auto sm:max-w-none"
               variants={{
                 hidden: { opacity: 0, y: 30, scale: 0.95 },
                 visible: {
@@ -92,19 +92,21 @@ export function Hero() {
                 },
               }}
             >
-              <div className="inline-flex rounded-xl bg-[#c9a962]/10 p-4 transition-all duration-300 group-hover:bg-[#c9a962]/15 group-hover:scale-105 sm:p-5">
-                <Icon className="h-8 w-8 text-[#c9a962] transition-all duration-300 group-hover:text-[#e5d4a1] sm:h-9 sm:w-9" />
+              <div className="flex flex-col items-center gap-4 px-8 py-10 sm:gap-5 sm:px-12 sm:py-12 lg:px-14 lg:py-14">
+                <div className="inline-flex rounded-xl bg-transparent p-4 transition-all duration-300 group-hover:scale-105 sm:p-5">
+                  <Icon className="h-8 w-8 text-[#c9a962] transition-all duration-300 group-hover:text-[#e5d4a1] sm:h-9 sm:w-9" />
+                </div>
+                <span className="text-balance px-1 text-center text-sm font-medium leading-snug text-[#f5f0e6]/90 sm:px-0 sm:text-base">
+                  {t(`hero.${key}`)}
+                </span>
               </div>
-              <span className="text-sm font-medium text-[#f5f0e6]/90 sm:text-base">
-                {t(`hero.${key}`)}
-              </span>
             </motion.div>
           ))}
         </motion.div>
 
         {/* Imagen circular - mobile/tablet: debajo de las cards */}
         <div className="mt-12 flex justify-center lg:hidden">
-          <div className="group/img-mob h-48 w-48 overflow-hidden rounded-full border border-[#c9a962]/20 transition-all duration-300 hover:border-[#c9a962]/40 sm:h-56 sm:w-56">
+          <div className="group/img-mob h-48 w-48 overflow-hidden rounded-full border border-white/15 transition-all duration-300 hover:border-white/28 sm:h-56 sm:w-56">
             <img
               src="https://images.unsplash.com/photo-1716973004922-1f7d57fe265c?w=600&q=80"
               alt={t('hero.imageAlt')}

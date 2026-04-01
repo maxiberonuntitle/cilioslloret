@@ -38,40 +38,42 @@ export function Services() {
           </motion.div>
         </div>
 
-        <div className="grid w-full max-w-4xl grid-cols-1 justify-items-center gap-8 sm:grid-cols-2 sm:gap-10 lg:grid-cols-3 lg:gap-12">
+        <div className="grid w-full max-w-5xl grid-cols-1 gap-8 sm:grid-cols-2 sm:gap-10 lg:grid-cols-3 lg:gap-12">
           {services.map(({ key, icon: Icon }, i) => (
             <motion.div
               key={key}
-              className="group relative flex aspect-square min-h-[180px] max-w-[240px] flex-col items-center justify-center overflow-hidden rounded-2xl border border-white/[0.06] bg-gradient-to-b from-[#1a1a1a] to-[#141414] p-6 text-center shadow-lg transition-all duration-300 hover:-translate-y-1 hover:border-[#c9a962]/40 hover:shadow-[0_0_50px_-10px_rgba(201,169,98,0.25)] sm:min-h-[200px] sm:max-w-[260px] sm:p-8"
+              className="group relative w-[min(100%,20rem)] justify-self-center overflow-hidden rounded-2xl bg-transparent transition-all duration-300 ease-out hover:-translate-y-1 group-hover:bg-[#f5f0e6] group-hover:shadow-[0_12px_40px_-12px_rgba(0,0,0,0.35)] sm:w-full sm:max-w-none sm:justify-self-stretch"
               variants={fadeInUp}
               initial="hidden"
               whileInView="visible"
               viewport={viewportConfig}
               custom={i}
             >
-              {/* Línea decorativa superior */}
-              <div className="absolute left-0 right-0 top-0 h-[2px] bg-gradient-to-r from-transparent via-[#c9a962]/40 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+              <div className="flex flex-col items-center px-7 pb-12 pt-10 text-center sm:px-8 sm:pb-14 sm:pt-11 lg:px-9 lg:pb-16 lg:pt-12">
+                <div className="mb-4 inline-flex w-fit shrink-0 rounded-xl p-4 transition-all duration-300 group-hover:scale-110 sm:mb-5 sm:p-5">
+                  <Icon
+                    className="h-8 w-8 text-[#c9a962] transition-colors duration-300 group-hover:text-[#0a0a0a] sm:h-9 sm:w-9"
+                    strokeWidth={1.5}
+                  />
+                </div>
 
-              <div className="mb-5 inline-flex w-fit rounded-xl bg-[#c9a962]/10 p-4 ring-1 ring-[#c9a962]/10 transition-all duration-300 group-hover:bg-[#c9a962]/20 group-hover:ring-[#c9a962]/30 group-hover:scale-110 sm:mb-6 sm:p-5">
-                <Icon className="h-8 w-8 text-[#c9a962] transition-colors duration-300 group-hover:text-[#e5d4a1] sm:h-9 sm:w-9" strokeWidth={1.5} />
+                <h3 className="font-display text-lg font-semibold leading-snug text-[#f5f0e6] transition-colors duration-300 group-hover:text-[#0a0a0a]">
+                  {t(`services.${key}`)}
+                </h3>
+                <p className="mt-3 text-[13px] leading-relaxed text-[#a3a3a3] transition-colors duration-300 group-hover:text-[#525252] sm:mt-4 sm:text-sm">
+                  {t(`services.${key}Desc`)}
+                </p>
+
+                <a
+                  href={getWhatsAppUrl(`Hola, me interesa el servicio de ${t(`services.${key}`)} en Cílios Lloret`)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="mt-6 inline-flex w-full max-w-[16rem] items-center justify-center gap-2 rounded-xl px-5 py-3.5 text-xs font-semibold text-[#c9a962] transition-all duration-300 group-hover:bg-[#0a0a0a] group-hover:text-[#f5f0e6] hover:scale-[1.02] group-hover:hover:bg-[#c9a962] group-hover:hover:text-black group-hover:hover:shadow-[0_0_20px_-5px_rgba(201,169,98,0.45)] sm:mt-7 sm:max-w-none sm:px-6 sm:py-3.5"
+                >
+                  {t('services.cta')}
+                  <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
+                </a>
               </div>
-
-              <h3 className="font-display text-lg font-semibold text-[#f5f0e6]">
-                {t(`services.${key}`)}
-              </h3>
-              <p className="mt-3 text-[13px] leading-relaxed text-[#a3a3a3] sm:mt-4">
-                {t(`services.${key}Desc`)}
-              </p>
-
-              <a
-                href={getWhatsAppUrl(`Hola, me interesa el servicio de ${t(`services.${key}`)} en Cílios Lloret`)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-6 inline-flex items-center justify-center gap-2 rounded-xl bg-[#c9a962]/10 px-5 py-3 text-xs font-semibold text-[#c9a962] ring-1 ring-[#c9a962]/20 transition-all duration-300 hover:scale-[1.02] hover:bg-[#c9a962] hover:text-black hover:ring-[#c9a962] hover:shadow-[0_0_20px_-5px_rgba(201,169,98,0.4)] sm:mt-7 sm:px-6 sm:py-3.5"
-              >
-                {t('services.cta')}
-                <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-0.5" />
-              </a>
             </motion.div>
           ))}
         </div>

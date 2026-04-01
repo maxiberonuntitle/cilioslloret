@@ -7,21 +7,25 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
-import { MessageCircle, MapPin, Send, Share2, User } from 'lucide-react'
+import { MessageCircle, MapPin, Send, Share2 } from 'lucide-react'
 import { getWhatsAppUrl } from '@/lib/constants'
 import { getContactCardPdfBlob } from '@/lib/generateContactCardPdf'
-import { sendContactEmail } from '@/lib/emailService'
+import { openContactMailto } from '@/lib/contactMailto'
 import { fadeInUp, slideInLeft, slideInRight, viewportConfig } from '@/lib/animations'
 import { LashPattern } from '@/components/LashPattern'
 
-interface FormData {
+interface ContactFields {
   name: string
   email: string
   message: string
+  'bot-field'?: string
 }
 
 const inputBase =
-  'w-full rounded-xl border bg-[#141414] px-5 py-4 text-[#f5f0e6] placeholder-[#737373] transition-all duration-200 resize-none hover:border-white/20 sm:px-6 sm:py-4'
+  'w-full rounded-xl border-0 bg-[#0c0c0c]/90 px-5 py-[1.05rem] text-[15px] leading-relaxed text-[#f5f0e6] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)] transition-all duration-200 placeholder:text-[#737373] placeholder:leading-relaxed selection:bg-[#c9a962]/25 selection:text-[#f5f0e6] sm:px-6 sm:py-[1.15rem] sm:text-base'
+
+const labelClass =
+  'block text-[11px] font-semibold uppercase tracking-[0.16em] text-[#c9a962]/90'
 
 function ShareContactButton({ t }: { t: (key: string) => string }) {
   const [shared, setShared] = useState(false)
@@ -58,7 +62,7 @@ function ShareContactButton({ t }: { t: (key: string) => string }) {
     <button
       type="button"
       onClick={handleShare}
-      className="flex w-full items-center justify-center gap-3 rounded-xl border border-[#c9a962]/30 bg-[#c9a962]/5 px-6 py-4 text-sm font-semibold text-[#c9a962] transition-all duration-300 hover:scale-[1.02] hover:border-[#c9a962]/50 hover:bg-[#c9a962]/10 hover:text-[#e5d4a1] sm:gap-3.5 sm:px-8 sm:py-4 sm:text-base"
+      className="flex w-full items-center justify-center gap-3 rounded-xl border border-white/15 bg-transparent px-6 py-4 text-sm font-semibold text-[#c9a962] transition-all duration-300 hover:scale-[1.02] hover:border-white/25 hover:bg-transparent hover:text-[#e5d4a1] sm:gap-3.5 sm:px-8 sm:py-4 sm:text-base"
     >
       <Share2 className="h-5 w-5 sm:h-6 sm:w-6" />
       {shared ? t('contact.shareSuccess') : t('contact.shareCard')}
@@ -67,33 +71,24 @@ function ShareContactButton({ t }: { t: (key: string) => string }) {
 }
 
 const inputFocus =
-  'focus:border-[#c9a962]/60 focus:outline-none focus:ring-2 focus:ring-[#c9a962]/20'
-const inputError = 'border-red-500/50 focus:border-red-500/70 focus:ring-red-500/20'
+  'focus:outline-none focus:ring-2 focus:ring-[#c9a962]/25 focus:ring-offset-2 focus:ring-offset-[#0a0a0a]'
+const inputError =
+  'ring-2 ring-red-500/40 focus:ring-2 focus:ring-red-500/20 focus:ring-offset-2 focus:ring-offset-[#0a0a0a]'
 
 export function Contact() {
   const { t } = useTranslation()
   const [submitted, setSubmitted] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [loading, setLoading] = useState(false)
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<FormData>({ mode: 'onBlur' })
+  } = useForm<ContactFields>({ mode: 'onBlur', defaultValues: { 'bot-field': '' } })
 
-  const onSubmit = async (data: FormData) => {
-    setError(null)
-    setLoading(true)
-    const result = await sendContactEmail(data)
-    setLoading(false)
-
-    if (result.success) {
-      setSubmitted(true)
-      reset()
-    } else {
-      setError(result.message)
-    }
+  const onSubmit = (data: ContactFields) => {
+    if (!openContactMailto(data)) return
+    setSubmitted(true)
+    reset()
   }
 
   return (
@@ -124,7 +119,7 @@ export function Contact() {
           >
             <div
               id="contact-card"
-              className="group overflow-hidden rounded-2xl border border-white/10 bg-gradient-to-b from-[#1a1a1a] to-[#0f0f0f] shadow-xl shadow-black/20 transition-all duration-300 hover:border-[#c9a962]/25 hover:shadow-[0_0_50px_-15px_rgba(201,169,98,0.2)]"
+              className="group overflow-hidden rounded-2xl bg-transparent shadow-none transition-all duration-300 hover:shadow-[0_0_40px_-15px_rgba(255,255,255,0.06)]"
             >
               {/* Línea dorada superior */}
               <div className="h-[2px] bg-gradient-to-r from-transparent via-[#c9a962]/60 to-transparent" />
@@ -138,19 +133,9 @@ export function Contact() {
                   <p className="mt-2 text-sm text-[#737373]">{t('footer.tagline')}</p>
                 </div>
 
-                {/* Datos de contacto */}
                 <div className="space-y-8">
                   <div className="group/row flex items-center gap-6 transition-colors duration-300 hover:text-[#f5f0e6]">
-                    <div className="flex shrink-0 rounded-xl bg-[#c9a962]/10 p-4 transition-all duration-300 group-hover/row:bg-[#c9a962]/15 group-hover/row:scale-105 sm:p-5">
-                      <User className="h-6 w-6 text-[#c9a962] transition-colors duration-300 group-hover/row:text-[#e5d4a1] sm:h-7 sm:w-7" />
-                    </div>
-                    <div>
-                      <p className="text-sm text-[#a3a3a3]">{t('contact.fieldName')}</p>
-                      <p className="font-semibold text-[#f5f0e6] text-lg">{t('contact.name')}</p>
-                    </div>
-                  </div>
-                  <div className="group/row flex items-center gap-6 transition-colors duration-300 hover:text-[#f5f0e6]">
-                    <div className="flex shrink-0 rounded-xl bg-[#25d366]/10 p-4 transition-all duration-300 group-hover/row:bg-[#25d366]/20 group-hover/row:scale-105 sm:p-5">
+                    <div className="flex shrink-0 rounded-xl bg-transparent p-4 transition-all duration-300 group-hover/row:scale-105 sm:p-5">
                       <MessageCircle className="h-6 w-6 text-[#25d366] transition-colors duration-300 group-hover/row:text-[#34e077] sm:h-7 sm:w-7" />
                     </div>
                     <div>
@@ -166,7 +151,7 @@ export function Contact() {
                     </div>
                   </div>
                   <div className="group/row flex items-center gap-6 transition-colors duration-300 hover:text-[#f5f0e6]">
-                    <div className="flex shrink-0 rounded-xl bg-[#c9a962]/10 p-4 transition-all duration-300 group-hover/row:bg-[#c9a962]/15 group-hover/row:scale-105 sm:p-5">
+                    <div className="flex shrink-0 rounded-xl bg-transparent p-4 transition-all duration-300 group-hover/row:scale-105 sm:p-5">
                       <MapPin className="h-6 w-6 text-[#c9a962] transition-colors duration-300 group-hover/row:text-[#e5d4a1] sm:h-7 sm:w-7" />
                     </div>
                     <div>
@@ -197,121 +182,126 @@ export function Contact() {
               {t('contact.formTitle')}
             </h3>
             {submitted ? (
-              <div className="mt-6 rounded-2xl border border-[#c9a962]/30 bg-[#c9a962]/5 p-6">
-                <p className="text-[#f5f0e6]">{t('contact.thanksMessage')}</p>
-                <p className="mt-2 text-[#a3a3a3]">{t('contact.afterSubmit')}</p>
-                <a
-                  href={getWhatsAppUrl()}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="mt-4 inline-flex items-center gap-2 text-[#25d366] transition-all duration-200 hover:scale-[1.02] hover:text-[#34e077] hover:underline"
-                >
-                  <MessageCircle className="h-5 w-5" />
-                  WhatsApp
-                </a>
+              <div className="mt-8 overflow-visible sm:mt-10">
+                <div className="flex flex-col gap-4 py-7 text-[15px] leading-relaxed sm:gap-5 sm:py-8">
+                  <p className="font-display text-lg text-[#f5f0e6]">{t('contact.thanksMessage')}</p>
+                  <p className="text-[#a3a3a3]">{t('contact.mailtoHint')}</p>
+                  <p className="text-[#a3a3a3]">{t('contact.afterSubmit')}</p>
+                  <a
+                    href={getWhatsAppUrl()}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex w-fit items-center gap-2 text-[#25d366] transition-all duration-200 hover:text-[#34e077] hover:underline"
+                  >
+                    <MessageCircle className="h-5 w-5 shrink-0" />
+                    WhatsApp
+                  </a>
+                </div>
               </div>
             ) : (
-              <form onSubmit={handleSubmit(onSubmit)} className="mt-8 space-y-6 sm:mt-10 sm:space-y-7">
-                {error && (
-                  <div
-                    className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3"
-                    role="alert"
-                  >
-                    <p className="text-sm text-red-400">{error}</p>
+              <form
+                onSubmit={handleSubmit(onSubmit)}
+                className="mt-8 overflow-visible sm:mt-10"
+                name="contact"
+              >
+                <div className="flex flex-col gap-6 py-7 sm:gap-7 sm:py-8">
+                  <p className="hidden" aria-hidden="true">
+                    <label htmlFor="contact-bot-field">
+                      No rellenar
+                      <input
+                        id="contact-bot-field"
+                        {...register('bot-field')}
+                        type="text"
+                        tabIndex={-1}
+                        autoComplete="off"
+                      />
+                    </label>
+                  </p>
+
+                  <div className="flex flex-col gap-2.5">
+                    <label htmlFor="contact-name" className={labelClass}>
+                      {t('contact.nameLabel')}
+                    </label>
+                    <input
+                      id="contact-name"
+                      autoComplete="name"
+                      {...register('name', {
+                        required: t('contact.errors.required'),
+                        minLength: {
+                          value: 2,
+                          message: t('contact.errors.nameMin'),
+                        },
+                      })}
+                      placeholder={t('contact.namePlaceholder')}
+                      aria-invalid={!!errors.name}
+                      className={`${inputBase} ${inputFocus} min-h-[3.25rem] ${errors.name ? inputError : ''}`}
+                    />
+                    {errors.name && (
+                      <p className="text-sm text-red-400/95" role="alert">
+                        {errors.name.message}
+                      </p>
+                    )}
                   </div>
-                )}
 
-                <div className="space-y-2">
-                  <label htmlFor="contact-name" className="block text-sm font-medium text-[#a3a3a3]">
-                    {t('contact.nameLabel')}
-                  </label>
-                  <input
-                    id="contact-name"
-                    {...register('name', {
-                      required: t('contact.errors.required'),
-                      minLength: {
-                        value: 2,
-                        message: t('contact.errors.nameMin'),
-                      },
-                    })}
-                    placeholder={t('contact.namePlaceholder')}
-                    aria-invalid={!!errors.name}
-                    className={`${inputBase} ${inputFocus} border-white/10 ${errors.name ? inputError : ''}`}
-                  />
-                  {errors.name && (
-                    <p className="text-sm text-red-400" role="alert">
-                      {errors.name.message}
-                    </p>
-                  )}
+                  <div className="flex flex-col gap-2.5">
+                    <label htmlFor="contact-email" className={labelClass}>
+                      {t('contact.emailLabel')}
+                    </label>
+                    <input
+                      id="contact-email"
+                      type="email"
+                      autoComplete="email"
+                      {...register('email', {
+                        required: t('contact.errors.required'),
+                        pattern: {
+                          value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                          message: t('contact.errors.emailInvalid'),
+                        },
+                      })}
+                      placeholder={t('contact.emailPlaceholder')}
+                      aria-invalid={!!errors.email}
+                      className={`${inputBase} ${inputFocus} min-h-[3.25rem] ${errors.email ? inputError : ''}`}
+                    />
+                    {errors.email && (
+                      <p className="text-sm text-red-400/95" role="alert">
+                        {errors.email.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="flex flex-col gap-2.5">
+                    <label htmlFor="contact-message" className={labelClass}>
+                      {t('contact.messageLabel')}
+                    </label>
+                    <textarea
+                      id="contact-message"
+                      {...register('message', {
+                        required: t('contact.errors.required'),
+                        minLength: {
+                          value: 10,
+                          message: t('contact.errors.messageMin'),
+                        },
+                      })}
+                      rows={5}
+                      placeholder={t('contact.messagePlaceholder')}
+                      aria-invalid={!!errors.message}
+                      className={`${inputBase} ${inputFocus} min-h-[148px] resize-y py-4 ${errors.message ? inputError : ''}`}
+                    />
+                    {errors.message && (
+                      <p className="text-sm text-red-400/95" role="alert">
+                        {errors.message.message}
+                      </p>
+                    )}
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="font-display mt-1 flex w-full items-center justify-center gap-3 rounded-xl bg-[#c9a962] px-8 py-4 text-base font-semibold tracking-wide text-black transition-all duration-300 hover:scale-[1.01] hover:bg-[#e5d4a1] hover:shadow-[0_0_28px_-6px_rgba(201,169,98,0.45)] active:scale-[0.99] sm:gap-3.5 sm:px-10 sm:py-[1.125rem] sm:text-[1.05rem]"
+                  >
+                    <Send className="h-5 w-5 shrink-0" strokeWidth={2} />
+                    {t('contact.submit')}
+                  </button>
                 </div>
-
-                <div className="space-y-2">
-                  <label htmlFor="contact-email" className="block text-sm font-medium text-[#a3a3a3]">
-                    {t('contact.emailLabel')}
-                  </label>
-                  <input
-                    id="contact-email"
-                    type="email"
-                    {...register('email', {
-                      required: t('contact.errors.required'),
-                      pattern: {
-                        value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                        message: t('contact.errors.emailInvalid'),
-                      },
-                    })}
-                    placeholder={t('contact.emailPlaceholder')}
-                    aria-invalid={!!errors.email}
-                    className={`${inputBase} ${inputFocus} border-white/10 ${errors.email ? inputError : ''}`}
-                  />
-                  {errors.email && (
-                    <p className="text-sm text-red-400" role="alert">
-                      {errors.email.message}
-                    </p>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <label htmlFor="contact-message" className="block text-sm font-medium text-[#a3a3a3]">
-                    {t('contact.messageLabel')}
-                  </label>
-                  <textarea
-                    id="contact-message"
-                    {...register('message', {
-                      required: t('contact.errors.required'),
-                      minLength: {
-                        value: 10,
-                        message: t('contact.errors.messageMin'),
-                      },
-                    })}
-                    rows={5}
-                    placeholder={t('contact.messagePlaceholder')}
-                    aria-invalid={!!errors.message}
-                    className={`${inputBase} ${inputFocus} border-white/10 ${errors.message ? inputError : ''}`}
-                  />
-                  {errors.message && (
-                    <p className="text-sm text-red-400" role="alert">
-                      {errors.message.message}
-                    </p>
-                  )}
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="flex w-full items-center justify-center gap-3 rounded-xl bg-[#c9a962] px-8 py-4 font-semibold text-black transition-all duration-300 hover:scale-[1.02] hover:bg-[#e5d4a1] hover:shadow-[0_0_25px_-5px_rgba(201,169,98,0.4)] active:scale-[0.99] disabled:scale-100 disabled:cursor-not-allowed disabled:opacity-70 sm:gap-3.5 sm:px-10 sm:py-4.5"
-                >
-                  {loading ? (
-                    <>
-                      <span className="inline-block h-5 w-5 animate-spin rounded-full border-2 border-black/30 border-t-black" />
-                      {t('contact.sending')}
-                    </>
-                  ) : (
-                    <>
-                      <Send className="h-5 w-5" />
-                      {t('contact.submit')}
-                    </>
-                  )}
-                </button>
               </form>
             )}
           </motion.div>
