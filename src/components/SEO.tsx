@@ -24,8 +24,10 @@ export function SEO({
 }: SEOProps) {
   const { t, i18n } = useTranslation()
   const currentLang = lang ?? i18n.language
-  const seoTitle = title ?? t('seo.title')
-  const seoDescription = description ?? t('seo.description')
+  const tPt = i18n.getFixedT('pt')
+  const seoTitle = title ?? tPt('seo.title')
+  const seoDescription = description ?? tPt('seo.description')
+  const seoImageAlt = tPt('seo.imageAlt')
   const seoKeywords = t('seo.keywords')
 
   const schema = {
@@ -34,7 +36,11 @@ export function SEO({
     name: 'Cílios Lloret',
     description: seoDescription,
     url: SITE_URL,
-    image,
+    image: {
+      '@type': 'ImageObject',
+      url: image,
+      caption: seoImageAlt,
+    },
     inLanguage: ['pt-BR', 'es', 'ca'],
     telephone: '+34601877214',
     address: {
@@ -63,7 +69,7 @@ export function SEO({
 
   return (
     <Helmet>
-      <html lang={currentLang} />
+      <html lang={currentLang} translate="no" />
       <title>{seoTitle}</title>
       <meta name="description" content={seoDescription} />
       <meta name="keywords" content={seoKeywords} />
@@ -81,6 +87,7 @@ export function SEO({
       <meta property="og:title" content={seoTitle} />
       <meta property="og:description" content={seoDescription} />
       <meta property="og:image" content={image} />
+      <meta property="og:image:alt" content={seoImageAlt} />
       <meta property="og:locale" content={ogLocale} />
       {currentLang !== 'pt' && <meta property="og:locale:alternate" content="pt_BR" />}
       {currentLang !== 'es' && <meta property="og:locale:alternate" content="es_ES" />}
