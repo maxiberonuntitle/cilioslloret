@@ -1,7 +1,6 @@
 /**
- * Galería - Antes/Después
+ * Galería — entradas antes/después y fotos sueltas
  * Lightbox premium, optimizada para mobile
- * Placeholder para imágenes reales
  */
 
 import { useState } from 'react'
@@ -10,35 +9,43 @@ import { useTranslation } from 'react-i18next'
 import { X } from 'lucide-react'
 import { fadeInUp, viewportConfig } from '@/lib/animations'
 import { LashDecorations } from '@/components/LashDecorations'
+import cilios1 from '@/assets/cilios1.jpeg'
+import cilios2 from '@/assets/cilios2.jpeg'
+import cilios3 from '@/assets/cilios3.jpeg'
+import cilios4 from '@/assets/cilios4.jpeg'
+import ciliosantes1 from '@/assets/ciliosantes1.jpeg'
+import ciliosantes2 from '@/assets/ciliosantes2.jpeg'
 
-// Imágenes antes/después - ojos con extensiones de pestañas (Unsplash, licencia libre)
-// Antes: ojos naturales / Después: ojos con pestañas extendidas
-const galleryItems = [
-  {
-    id: 1,
-    before: 'https://images.unsplash.com/photo-1534627425233-f7d6335ca734?w=600&q=80',
-    after: 'https://images.unsplash.com/photo-1716973004922-1f7d57fe265c?w=600&q=80',
-  },
-  {
-    id: 2,
-    before: 'https://images.unsplash.com/photo-1633692389064-34103a2b037c?w=600&q=80',
-    after: 'https://images.unsplash.com/photo-1637552481486-cb993bdde88f?w=600&q=80',
-  },
-  {
-    id: 3,
-    before: 'https://images.unsplash.com/photo-1483519173755-be893fab1f46?w=600&q=80',
-    after: 'https://images.unsplash.com/photo-1674049406467-824ea37c7184?w=600&q=80',
-  },
-  {
-    id: 4,
-    before: 'https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=600&q=80',
-    after: 'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=600&q=80',
-  },
+type GalleryBeforeAfter = {
+  id: number
+  kind: 'beforeAfter'
+  before: string
+  after: string
+}
+
+type GallerySingle = {
+  id: number
+  kind: 'single'
+  image: string
+}
+
+type GalleryItem = GalleryBeforeAfter | GallerySingle
+
+const galleryItems: GalleryItem[] = [
+  { id: 1, kind: 'beforeAfter', before: ciliosantes1, after: cilios1 },
+  { id: 2, kind: 'beforeAfter', before: ciliosantes2, after: cilios2 },
+  { id: 3, kind: 'single', image: cilios3 },
+  { id: 4, kind: 'single', image: cilios4 },
 ]
+
+function thumbSrc(item: GalleryItem): string {
+  return item.kind === 'beforeAfter' ? item.after : item.image
+}
 
 export function Gallery() {
   const { t } = useTranslation()
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
+  const lightboxItem = lightboxIndex !== null ? galleryItems[lightboxIndex] : null
 
   return (
     <section id="galeria" className="section-spacing relative overflow-hidden">
@@ -73,20 +80,38 @@ export function Gallery() {
             >
               <div className="relative aspect-[4/3] bg-[#1a1a1a]">
                 <img
-                  src={item.after}
+                  src={thumbSrc(item)}
                   alt={t('gallery.resultAlt', { id: item.id })}
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  className="h-full w-full object-cover opacity-[0.62] transition-all duration-500 group-hover:scale-105 group-hover:opacity-[0.9]"
+                />
+                <div
+                  className="pointer-events-none absolute inset-0 bg-black/32 transition-colors duration-500 group-hover:bg-black/10"
+                  aria-hidden
                 />
                 <div className="absolute inset-0 flex items-center justify-center bg-black/50 opacity-0 transition-all duration-300 group-hover:opacity-100">
                   <span className="rounded-lg bg-[#c9a962]/90 px-5 py-2.5 text-sm font-medium text-black transition-transform duration-300 group-hover:scale-105">
-                    {t('gallery.viewBeforeAfter')}
+                    {item.kind === 'beforeAfter'
+                      ? t('gallery.viewBeforeAfter')
+                      : t('gallery.viewImage')}
                   </span>
                 </div>
               </div>
               <div className="flex items-center border-t border-white/5 bg-transparent px-5 py-4 transition-colors duration-300 sm:px-6 sm:py-5">
-                <span className="text-xs text-[#737373] transition-colors duration-300 group-hover:text-[#a3a3a3]">{t('gallery.before')}</span>
-                <span className="mx-2 text-[#737373] transition-colors duration-300 group-hover:text-[#a3a3a3]">→</span>
-                <span className="text-xs text-[#c9a962] transition-colors duration-300 group-hover:text-[#e5d4a1]">{t('gallery.after')}</span>
+                {item.kind === 'beforeAfter' ? (
+                  <>
+                    <span className="text-xs text-[#737373] transition-colors duration-300 group-hover:text-[#a3a3a3]">
+                      {t('gallery.before')}
+                    </span>
+                    <span className="mx-2 text-[#737373] transition-colors duration-300 group-hover:text-[#a3a3a3]">
+                      →
+                    </span>
+                    <span className="text-xs text-[#c9a962] transition-colors duration-300 group-hover:text-[#e5d4a1]">
+                      {t('gallery.after')}
+                    </span>
+                  </>
+                ) : (
+                  <span className="text-xs text-[#c9a962]/90">{t('gallery.resultAlt', { id: item.id })}</span>
+                )}
               </div>
             </motion.div>
           ))}
@@ -95,7 +120,7 @@ export function Gallery() {
 
       {/* Lightbox */}
       <AnimatePresence>
-        {lightboxIndex !== null && (
+        {lightboxItem && (
           <motion.div
             className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 p-4"
             initial={{ opacity: 0 }}
@@ -104,7 +129,11 @@ export function Gallery() {
             onClick={() => setLightboxIndex(null)}
           >
             <motion.div
-              className="relative max-w-4xl"
+              className={
+                lightboxItem.kind === 'beforeAfter'
+                  ? 'relative max-w-4xl'
+                  : 'relative max-w-3xl'
+              }
               initial={{ scale: 0.9 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0.9 }}
@@ -117,24 +146,34 @@ export function Gallery() {
               >
                 <X className="h-8 w-8" />
               </button>
-              <div className="grid gap-4 sm:grid-cols-2">
+              {lightboxItem.kind === 'beforeAfter' ? (
+                <div className="grid gap-4 sm:grid-cols-2">
+                  <div className="group/img-lb">
+                    <p className="mb-2 text-sm text-[#a3a3a3]">{t('gallery.before')}</p>
+                    <img
+                      src={lightboxItem.before}
+                      alt={t('gallery.before')}
+                      className="w-full rounded-xl transition-transform duration-300 group-hover/img-lb:scale-[1.02]"
+                    />
+                  </div>
+                  <div className="group/img-lb">
+                    <p className="mb-2 text-sm text-[#c9a962]">{t('gallery.after')}</p>
+                    <img
+                      src={lightboxItem.after}
+                      alt={t('gallery.after')}
+                      className="w-full rounded-xl transition-transform duration-300 group-hover/img-lb:scale-[1.02]"
+                    />
+                  </div>
+                </div>
+              ) : (
                 <div className="group/img-lb">
-                  <p className="mb-2 text-sm text-[#a3a3a3]">{t('gallery.before')}</p>
                   <img
-                    src={galleryItems[lightboxIndex].before}
-                    alt={t('gallery.before')}
-                    className="rounded-xl transition-transform duration-300 group-hover/img-lb:scale-[1.02]"
+                    src={lightboxItem.image}
+                    alt={t('gallery.resultAlt', { id: lightboxItem.id })}
+                    className="max-h-[85vh] w-full rounded-xl object-contain transition-transform duration-300 group-hover/img-lb:scale-[1.02]"
                   />
                 </div>
-                <div className="group/img-lb">
-                  <p className="mb-2 text-sm text-[#c9a962]">{t('gallery.after')}</p>
-                  <img
-                    src={galleryItems[lightboxIndex].after}
-                    alt={t('gallery.after')}
-                    className="rounded-xl transition-transform duration-300 group-hover/img-lb:scale-[1.02]"
-                  />
-                </div>
-              </div>
+              )}
             </motion.div>
           </motion.div>
         )}

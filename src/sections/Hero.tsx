@@ -8,6 +8,7 @@ import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { User, MapPin } from 'lucide-react'
 import { LashDecorations } from '@/components/LashDecorations'
+import heroImage from '@/assets/cilios1.jpeg'
 
 const trustIcons = [
   { key: 'trust2', icon: User },
@@ -29,9 +30,9 @@ export function Hero() {
       <div className="absolute right-8 top-1/2 hidden -translate-y-1/2 lg:block">
         <div className="group/img h-72 w-72 overflow-hidden rounded-full border border-white/15 transition-all duration-300 hover:border-white/28 hover:shadow-[0_0_30px_-5px_rgba(255,255,255,0.08)]">
           <img
-            src="https://images.unsplash.com/photo-1716973004922-1f7d57fe265c?w=600&q=80"
+            src={heroImage}
             alt={t('hero.imageAlt')}
-            className="h-full w-full object-cover opacity-25 transition-all duration-500 group-hover/img:scale-105 group-hover/img:opacity-35"
+            className="h-full w-full object-cover opacity-[0.32] transition-all duration-500 group-hover/img:scale-105 group-hover/img:opacity-[0.44]"
           />
         </div>
       </div>
@@ -108,9 +109,9 @@ export function Hero() {
         <div className="mt-12 flex justify-center lg:hidden">
           <div className="group/img-mob h-48 w-48 overflow-hidden rounded-full border border-white/15 transition-all duration-300 hover:border-white/28 sm:h-56 sm:w-56">
             <img
-              src="https://images.unsplash.com/photo-1716973004922-1f7d57fe265c?w=600&q=80"
+              src={heroImage}
               alt={t('hero.imageAlt')}
-              className="h-full w-full object-cover opacity-25 transition-all duration-500 group-hover/img-mob:scale-105 group-hover/img-mob:opacity-35"
+              className="h-full w-full object-cover opacity-[0.32] transition-all duration-500 group-hover/img-mob:scale-105 group-hover/img-mob:opacity-[0.44]"
             />
           </div>
         </div>
