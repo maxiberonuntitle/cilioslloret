@@ -3,7 +3,7 @@
  * Lightbox premium, optimizada para mobile
  */
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { X } from 'lucide-react'
@@ -46,6 +46,22 @@ export function Gallery() {
   const { t } = useTranslation()
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
   const lightboxItem = lightboxIndex !== null ? galleryItems[lightboxIndex] : null
+
+  const closeLightbox = () => setLightboxIndex(null)
+
+  useEffect(() => {
+    if (lightboxIndex === null) return
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setLightboxIndex(null)
+    }
+    const prevOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    window.addEventListener('keydown', onKeyDown)
+    return () => {
+      document.body.style.overflow = prevOverflow
+      window.removeEventListener('keydown', onKeyDown)
+    }
+  }, [lightboxIndex])
 
   return (
     <section id="galeria" className="section-spacing relative overflow-hidden">
@@ -122,59 +138,70 @@ export function Gallery() {
       <AnimatePresence>
         {lightboxItem && (
           <motion.div
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/95 p-4"
+            className="fixed inset-0 z-[100] overflow-y-auto overscroll-contain"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            onClick={() => setLightboxIndex(null)}
+            role="dialog"
+            aria-modal="true"
+            aria-label={t('gallery.title')}
           >
-            <motion.div
-              className={
-                lightboxItem.kind === 'beforeAfter'
-                  ? 'relative max-w-4xl'
-                  : 'relative max-w-3xl'
-              }
-              initial={{ scale: 0.9 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.9 }}
-              onClick={(e) => e.stopPropagation()}
-            >
+            {/* Capa oscura: los toques aquí cierran (también en móvil). El contenido va encima con pointer-events-auto. */}
+            <div
+              className="fixed inset-0 z-0 bg-black/95"
+              onClick={closeLightbox}
+              aria-hidden
+            />
+            <div className="relative z-10 flex min-h-[100dvh] w-full flex-col items-center justify-center px-4 pb-10 pt-16 pointer-events-none sm:px-6 sm:py-10">
               <button
-                onClick={() => setLightboxIndex(null)}
-                className="absolute -top-12 right-0 rounded-lg p-2 text-white transition-all duration-200 hover:scale-110 hover:bg-white/10"
+                type="button"
+                onClick={closeLightbox}
+                className="pointer-events-auto fixed right-3 top-3 z-[110] flex h-12 w-12 items-center justify-center rounded-full bg-white/15 text-white shadow-lg backdrop-blur-sm transition-colors hover:bg-white/25 active:bg-white/30 sm:right-4 sm:top-4"
                 aria-label={t('gallery.close')}
               >
-                <X className="h-8 w-8" />
+                <X className="h-7 w-7" strokeWidth={2.25} />
               </button>
-              {lightboxItem.kind === 'beforeAfter' ? (
-                <div className="grid gap-4 sm:grid-cols-2">
+              <motion.div
+                className={
+                  lightboxItem.kind === 'beforeAfter'
+                    ? 'pointer-events-auto relative w-full max-w-4xl'
+                    : 'pointer-events-auto relative w-full max-w-3xl'
+                }
+                initial={{ scale: 0.96 }}
+                animate={{ scale: 1 }}
+                exit={{ scale: 0.96 }}
+                transition={{ duration: 0.2 }}
+              >
+                {lightboxItem.kind === 'beforeAfter' ? (
+                  <div className="grid max-h-none gap-4 sm:grid-cols-2">
+                    <div className="group/img-lb min-w-0">
+                      <p className="mb-2 text-sm text-[#a3a3a3]">{t('gallery.before')}</p>
+                      <img
+                        src={lightboxItem.before}
+                        alt={t('gallery.before')}
+                        className="max-h-[min(42vh,420px)] w-full rounded-xl object-contain sm:max-h-[min(75vh,720px)]"
+                      />
+                    </div>
+                    <div className="group/img-lb min-w-0">
+                      <p className="mb-2 text-sm text-[#c9a962]">{t('gallery.after')}</p>
+                      <img
+                        src={lightboxItem.after}
+                        alt={t('gallery.after')}
+                        className="max-h-[min(42vh,420px)] w-full rounded-xl object-contain sm:max-h-[min(75vh,720px)]"
+                      />
+                    </div>
+                  </div>
+                ) : (
                   <div className="group/img-lb">
-                    <p className="mb-2 text-sm text-[#a3a3a3]">{t('gallery.before')}</p>
                     <img
-                      src={lightboxItem.before}
-                      alt={t('gallery.before')}
-                      className="w-full rounded-xl transition-transform duration-300 group-hover/img-lb:scale-[1.02]"
+                      src={lightboxItem.image}
+                      alt={t('gallery.resultAlt', { id: lightboxItem.id })}
+                      className="max-h-[min(85dvh,900px)] w-full rounded-xl object-contain transition-transform duration-300 group-hover/img-lb:scale-[1.02]"
                     />
                   </div>
-                  <div className="group/img-lb">
-                    <p className="mb-2 text-sm text-[#c9a962]">{t('gallery.after')}</p>
-                    <img
-                      src={lightboxItem.after}
-                      alt={t('gallery.after')}
-                      className="w-full rounded-xl transition-transform duration-300 group-hover/img-lb:scale-[1.02]"
-                    />
-                  </div>
-                </div>
-              ) : (
-                <div className="group/img-lb">
-                  <img
-                    src={lightboxItem.image}
-                    alt={t('gallery.resultAlt', { id: lightboxItem.id })}
-                    className="max-h-[85vh] w-full rounded-xl object-contain transition-transform duration-300 group-hover/img-lb:scale-[1.02]"
-                  />
-                </div>
-              )}
-            </motion.div>
+                )}
+              </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
