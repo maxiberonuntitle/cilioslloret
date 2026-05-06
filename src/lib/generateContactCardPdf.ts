@@ -1,6 +1,7 @@
 /**
  * Tarjeta de contacto en PDF — diseño tipo alta papelería:
- * marco doble continuo, panel de texto, foto circular con doble aro y acento de pestañas sobre la marca.
+ * marco doble, panel de texto, foto rectangular con marco dorado y velos lineales
+ * sutiles en la zona de la imagen.
  */
 
 import { jsPDF } from 'jspdf'
@@ -15,7 +16,6 @@ type ContactCardData = {
 }
 
 const GOLD: [number, number, number] = [201, 169, 98]
-/** Dorado más claro para líneas secundarias del marco y anillo interior. */
 const GOLD_LIGHT: [number, number, number] = [220, 195, 135]
 const BG: [number, number, number] = [10, 10, 10]
 const PANEL_BG: [number, number, number] = [15, 14, 13]
@@ -31,34 +31,44 @@ function loadImage(src: string): Promise<HTMLImageElement> {
   })
 }
 
-function createHeroCircularThumbDataUrl(img: HTMLImageElement, diameterMm: number): string {
+/** Miniatura rectangular, cover, esquinas redondeadas (misma base que el hero). */
+function createHeroRoundedThumbDataUrl(
+  img: HTMLImageElement,
+  widthMm: number,
+  heightMm: number,
+  radiusMm: number,
+): string {
   const pxPerMm = 10
-  const w = Math.round(diameterMm * pxPerMm)
-  const r = w / 2
+  const w = Math.round(widthMm * pxPerMm)
+  const h = Math.round(heightMm * pxPerMm)
+  const r = Math.max(2, Math.round(radiusMm * pxPerMm))
   const canvas = document.createElement('canvas')
   canvas.width = w
-  canvas.height = w
+  canvas.height = h
   const ctx = canvas.getContext('2d')!
   ctx.fillStyle = `rgb(${BG.join(',')})`
-  ctx.fillRect(0, 0, w, w)
+  ctx.fillRect(0, 0, w, h)
 
   ctx.beginPath()
-  ctx.arc(r, r, r - 0.25, 0, Math.PI * 2)
+  if (typeof ctx.roundRect === 'function') {
+    ctx.roundRect(0, 0, w, h, r)
+  } else {
+    ctx.rect(0, 0, w, h)
+  }
   ctx.clip()
 
   const iw = img.naturalWidth
   const ih = img.naturalHeight
-  const scale = Math.max(w / iw, w / ih)
+  const scale = Math.max(w / iw, h / ih)
   const dw = iw * scale
   const dh = ih * scale
   const ox = (w - dw) / 2
-  const oy = (w - dh) / 2
+  const oy = (h - dh) / 2
   ctx.drawImage(img, ox, oy, dw, dh)
 
   return canvas.toDataURL('image/jpeg', 0.9)
 }
 
-/** Marco exterior doble (líneas cerradas, sin segmentos sueltos). */
 function drawDoublePortraitFrame(
   doc: jsPDF,
   x: number,
@@ -86,15 +96,69 @@ function drawDoublePortraitFrame(
   )
 }
 
-/** Aro doble alrededor de la fotografía. */
-function drawPhotoHalo(doc: jsPDF, cx: number, cy: number, radiusMm: number) {
+/** Marco doble redondeado alrededor de la fotografía (coherente con la tarjeta). */
+function drawPhotoDoubleFrame(
+  doc: jsPDF,
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+  outerR: number,
+  innerR: number,
+) {
+  const padOut = 0.4
   doc.setDrawColor(GOLD[0], GOLD[1], GOLD[2])
-  doc.setLineWidth(0.32)
-  doc.circle(cx, cy, radiusMm + 0.28, 'S')
+  doc.setLineWidth(0.3)
+  doc.roundedRect(x - padOut, y - padOut, w + padOut * 2, h + padOut * 2, outerR, outerR, 'S')
 
+  const inset = 0.75
   doc.setDrawColor(GOLD_LIGHT[0], GOLD_LIGHT[1], GOLD_LIGHT[2])
-  doc.setLineWidth(0.13)
-  doc.circle(cx, cy, radiusMm - 0.22, 'S')
+  doc.setLineWidth(0.12)
+  doc.roundedRect(x + inset, y + inset, w - inset * 2, h - inset * 2, innerR, innerR, 'S')
+}
+
+/**
+ * Líneas / curvas doradas muy suaves solo en la columna de la foto (detrás de la imagen).
+ */
+function drawPhotoZoneGoldVeil(
+  doc: jsPDF,
+  left: number,
+  top: number,
+  right: number,
+  bottom: number,
+) {
+  const ctx = doc.context2d
+  ctx.save()
+  ctx.strokeStyle = `rgb(${GOLD_LIGHT[0]}, ${GOLD_LIGHT[1]}, ${GOLD_LIGHT[2]})`
+  ctx.lineCap = 'round'
+  const span = right - left
+  const midY = (top + bottom) / 2
+
+  const curves = 8
+  ctx.globalAlpha = 0.1
+  ctx.lineWidth = 0.07
+  for (let i = 0; i < curves; i++) {
+    const t = i / (curves - 1)
+    const bx = left + 1.2 + t * (span - 2.4)
+    ctx.beginPath()
+    ctx.moveTo(bx, top + 1.5)
+    ctx.quadraticCurveTo(bx + 1.4 - t * 0.8, midY, bx - 0.6, bottom - 1.5)
+    ctx.stroke()
+  }
+
+  ctx.globalAlpha = 0.055
+  ctx.lineWidth = 0.06
+  const horiz = 5
+  for (let j = 0; j < horiz; j++) {
+    const t = j / (horiz - 1)
+    const hy = top + 2.5 + t * (bottom - top - 5)
+    ctx.beginPath()
+    ctx.moveTo(left + 0.8, hy)
+    ctx.lineTo(right - 0.8, hy + (j % 2 === 0 ? 0.3 : -0.25))
+    ctx.stroke()
+  }
+
+  ctx.restore()
 }
 
 function drawLashAccent(doc: jsPDF, centerX: number, baseY: number, spreadMm: number) {
@@ -125,15 +189,15 @@ async function buildPdfDoc(data: ContactCardData) {
   })
 
   const innerPad = 4
-  const photoD = 27.5 / 2
-  const photoR = photoD / 2
+  /** Retrato proporcionado para tarjeta horizontal. */
+  const photoW = 23
+  const photoH = 45.5
+  const photoR = 2.6
   const photoX = innerPad + 1.2
-  const photoY = (55 - photoD) / 2
-  const photoCx = photoX + photoR
-  const photoCy = photoY + photoR
+  const photoY = (55 - photoH) / 2
 
-  const gutter = 5
-  const contentLeft = photoX + photoD + gutter
+  const gutter = 4.5
+  const contentLeft = photoX + photoW + gutter
   const contentRight = 85 - innerPad - 1.2
   const textMaxW = contentRight - contentLeft - 3
   const contentCenterX = (contentLeft + contentRight) / 2
@@ -152,8 +216,15 @@ async function buildPdfDoc(data: ContactCardData) {
   const panelH = 55 - panelY - innerPad - 0.5
   const panelR = 2.8
 
+  const photoZoneLeft = frameX + frameInset + 0.35
+  const photoZoneRight = photoX + photoW + 1.4
+  const photoZoneTop = frameY + frameInset + 0.4
+  const photoZoneBottom = frameY + frameH - frameInset - 0.4
+
   doc.setFillColor(BG[0], BG[1], BG[2])
   doc.rect(0, 0, 85, 55, 'F')
+
+  drawPhotoZoneGoldVeil(doc, photoZoneLeft, photoZoneTop, photoZoneRight, photoZoneBottom)
 
   doc.setFillColor(PANEL_BG[0], PANEL_BG[1], PANEL_BG[2])
   doc.setDrawColor(GOLD[0], GOLD[1], GOLD[2])
@@ -161,10 +232,10 @@ async function buildPdfDoc(data: ContactCardData) {
   doc.roundedRect(panelX, panelY, panelW, panelH, panelR, panelR, 'FD')
 
   const img = await loadImage(heroImageSrc)
-  const thumb = createHeroCircularThumbDataUrl(img, photoD)
-  doc.addImage(thumb, 'JPEG', photoX, photoY, photoD, photoD)
+  const thumb = createHeroRoundedThumbDataUrl(img, photoW, photoH, photoR)
+  doc.addImage(thumb, 'JPEG', photoX, photoY, photoW, photoH)
 
-  drawPhotoHalo(doc, photoCx, photoCy, photoR)
+  drawPhotoDoubleFrame(doc, photoX, photoY, photoW, photoH, photoR + 0.35, photoR - 0.35)
 
   const padTop = panelY + 3.4
   const lashBaseY = padTop + 5
@@ -191,15 +262,16 @@ async function buildPdfDoc(data: ContactCardData) {
   doc.setTextColor(TEXT_WARM[0], TEXT_WARM[1], TEXT_WARM[2])
   doc.setFontSize(8)
   doc.setFont('helvetica', 'bold')
+  doc.setCharSpace(0)
   doc.text(data.name, contentCenterX, y, { align: 'center' })
 
   y += 6.2
   doc.setTextColor(GOLD[0], GOLD[1], GOLD[2])
   doc.setFontSize(8.4)
   doc.setFont('helvetica', 'normal')
-  doc.setCharSpace(0.35)
-  doc.text(data.whatsapp, contentCenterX, y, { align: 'center' })
   doc.setCharSpace(0)
+  const phoneW = doc.getTextWidth(data.whatsapp)
+  doc.text(data.whatsapp, contentCenterX - phoneW / 2, y)
 
   y += 6
   doc.setTextColor(TEXT_MUTED[0], TEXT_MUTED[1], TEXT_MUTED[2])
