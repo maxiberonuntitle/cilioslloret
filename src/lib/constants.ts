@@ -13,7 +13,7 @@ export const getWhatsAppUrl = (customMessage?: string) => {
 
 export const BRAND = {
   name: 'Cílios Lloret',
-  owner: 'Vanessa Gonçalvez',
+  owner: 'Vanessa Gonçalves',
   location: 'Lloret de Mar, Costa Brava',
   phone: '+34 601 877 214',
 }

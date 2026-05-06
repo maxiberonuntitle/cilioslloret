@@ -29,6 +29,7 @@ const labelClass =
 
 function ShareContactButton({ t }: { t: (key: string) => string }) {
   const [shared, setShared] = useState(false)
+  const [generating, setGenerating] = useState(false)
 
   const getCardData = () => ({
     name: t('contact.name'),
@@ -39,33 +40,46 @@ function ShareContactButton({ t }: { t: (key: string) => string }) {
   })
 
   const handleShare = async () => {
-    const cardData = getCardData()
-    const blob = getContactCardPdfBlob(cardData)
-    const file = new File([blob], 'Cilios-Lloret-tarjeta.pdf', { type: 'application/pdf' })
+    if (generating) return
+    setGenerating(true)
+    try {
+      const cardData = getCardData()
+      const blob = await getContactCardPdfBlob(cardData)
+      const file = new File([blob], 'Cilios-Lloret-tarjeta.pdf', { type: 'application/pdf' })
 
-    if (navigator.share && (navigator.canShare?.({ files: [file] }) ?? true)) {
-      try {
-        await navigator.share({
-          title: t('contact.shareTitle'),
-          text: `${cardData.brand} · ${cardData.whatsapp}`,
-          files: [file],
-        })
-        setShared(true)
-        setTimeout(() => setShared(false), 2000)
-      } catch {
-        // Usuario canceló o error al compartir - no hacer nada
+      if (navigator.share && (navigator.canShare?.({ files: [file] }) ?? true)) {
+        try {
+          await navigator.share({
+            title: t('contact.shareTitle'),
+            text: `${cardData.brand} · ${cardData.whatsapp}`,
+            files: [file],
+          })
+          setShared(true)
+          setTimeout(() => setShared(false), 2000)
+        } catch {
+          // Usuario canceló o error al compartir - no hacer nada
+        }
       }
+    } finally {
+      setGenerating(false)
     }
   }
+
+  const label = shared
+    ? t('contact.shareSuccess')
+    : generating
+      ? t('contact.shareGenerating')
+      : t('contact.shareCard')
 
   return (
     <button
       type="button"
       onClick={handleShare}
-      className="flex w-full items-center justify-center gap-3 rounded-xl border border-white/15 bg-transparent px-6 py-4 text-sm font-semibold text-[#c9a962] transition-all duration-300 hover:scale-[1.02] hover:border-white/25 hover:bg-transparent hover:text-[#e5d4a1] sm:gap-3.5 sm:px-8 sm:py-4 sm:text-base"
+      disabled={generating}
+      className="flex w-full items-center justify-center gap-3 rounded-xl border border-white/15 bg-transparent px-6 py-4 text-sm font-semibold text-[#c9a962] transition-all duration-300 hover:scale-[1.02] hover:border-white/25 hover:bg-transparent hover:text-[#e5d4a1] disabled:pointer-events-none disabled:opacity-55 sm:gap-3.5 sm:px-8 sm:py-4 sm:text-base"
     >
       <Share2 className="h-5 w-5 sm:h-6 sm:w-6" />
-      {shared ? t('contact.shareSuccess') : t('contact.shareCard')}
+      {label}
     </button>
   )
 }
