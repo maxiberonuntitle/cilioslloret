@@ -1,7 +1,7 @@
 /**
  * Tarjeta de contacto en PDF — diseño tipo alta papelería:
- * marco doble, panel de texto, foto rectangular con marco dorado y velos lineales
- * sutiles en la zona de la imagen.
+ * marco doble, panel de texto y foto rectangular con marco dorado; la foto va con opacidad
+ * para no competir con el texto.
  */
 
 import { jsPDF } from 'jspdf'
@@ -21,6 +21,11 @@ const BG: [number, number, number] = [10, 10, 10]
 const PANEL_BG: [number, number, number] = [15, 14, 13]
 const TEXT_MUTED: [number, number, number] = [150, 145, 135]
 const TEXT_WARM: [number, number, number] = [248, 244, 236]
+
+/** Opacidad de la imagen sobre el fondo (más bajo = más sutil, menos protagonismo). */
+const PHOTO_IMAGE_ALPHA = 0.5
+/** Velo oscuro uniforme encima de la foto para fundirla con la tarjeta. */
+const PHOTO_VEIL_ALPHA = 0.16
 
 function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => {
@@ -64,7 +69,12 @@ function createHeroRoundedThumbDataUrl(
   const dh = ih * scale
   const ox = (w - dw) / 2
   const oy = (h - dh) / 2
+  ctx.globalAlpha = PHOTO_IMAGE_ALPHA
   ctx.drawImage(img, ox, oy, dw, dh)
+  ctx.globalAlpha = 1
+
+  ctx.fillStyle = `rgba(${BG[0]}, ${BG[1]}, ${BG[2]}, ${PHOTO_VEIL_ALPHA})`
+  ctx.fillRect(0, 0, w, h)
 
   return canvas.toDataURL('image/jpeg', 0.9)
 }
@@ -115,50 +125,6 @@ function drawPhotoDoubleFrame(
   doc.setDrawColor(GOLD_LIGHT[0], GOLD_LIGHT[1], GOLD_LIGHT[2])
   doc.setLineWidth(0.12)
   doc.roundedRect(x + inset, y + inset, w - inset * 2, h - inset * 2, innerR, innerR, 'S')
-}
-
-/**
- * Líneas / curvas doradas muy suaves solo en la columna de la foto (detrás de la imagen).
- */
-function drawPhotoZoneGoldVeil(
-  doc: jsPDF,
-  left: number,
-  top: number,
-  right: number,
-  bottom: number,
-) {
-  const ctx = doc.context2d
-  ctx.save()
-  ctx.strokeStyle = `rgb(${GOLD_LIGHT[0]}, ${GOLD_LIGHT[1]}, ${GOLD_LIGHT[2]})`
-  ctx.lineCap = 'round'
-  const span = right - left
-  const midY = (top + bottom) / 2
-
-  const curves = 8
-  ctx.globalAlpha = 0.1
-  ctx.lineWidth = 0.07
-  for (let i = 0; i < curves; i++) {
-    const t = i / (curves - 1)
-    const bx = left + 1.2 + t * (span - 2.4)
-    ctx.beginPath()
-    ctx.moveTo(bx, top + 1.5)
-    ctx.quadraticCurveTo(bx + 1.4 - t * 0.8, midY, bx - 0.6, bottom - 1.5)
-    ctx.stroke()
-  }
-
-  ctx.globalAlpha = 0.055
-  ctx.lineWidth = 0.06
-  const horiz = 5
-  for (let j = 0; j < horiz; j++) {
-    const t = j / (horiz - 1)
-    const hy = top + 2.5 + t * (bottom - top - 5)
-    ctx.beginPath()
-    ctx.moveTo(left + 0.8, hy)
-    ctx.lineTo(right - 0.8, hy + (j % 2 === 0 ? 0.3 : -0.25))
-    ctx.stroke()
-  }
-
-  ctx.restore()
 }
 
 function drawLashAccent(doc: jsPDF, centerX: number, baseY: number, spreadMm: number) {
@@ -216,15 +182,8 @@ async function buildPdfDoc(data: ContactCardData) {
   const panelH = 55 - panelY - innerPad - 0.5
   const panelR = 2.8
 
-  const photoZoneLeft = frameX + frameInset + 0.35
-  const photoZoneRight = photoX + photoW + 1.4
-  const photoZoneTop = frameY + frameInset + 0.4
-  const photoZoneBottom = frameY + frameH - frameInset - 0.4
-
   doc.setFillColor(BG[0], BG[1], BG[2])
   doc.rect(0, 0, 85, 55, 'F')
-
-  drawPhotoZoneGoldVeil(doc, photoZoneLeft, photoZoneTop, photoZoneRight, photoZoneBottom)
 
   doc.setFillColor(PANEL_BG[0], PANEL_BG[1], PANEL_BG[2])
   doc.setDrawColor(GOLD[0], GOLD[1], GOLD[2])
