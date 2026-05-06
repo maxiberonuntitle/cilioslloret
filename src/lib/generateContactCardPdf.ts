@@ -1,6 +1,6 @@
 /**
- * Tarjeta de contacto en PDF — layout con miniatura (misma imagen que el hero),
- * marco dorado y detalles que sugieren pestañas (curvas tipo LashPattern).
+ * Tarjeta de contacto en PDF — miniatura circular (misma imagen que el hero),
+ * marco dorado y detalle de pestañas solo sobre la marca.
  */
 
 import { jsPDF } from 'jspdf'
@@ -26,49 +26,30 @@ function loadImage(src: string): Promise<HTMLImageElement> {
   })
 }
 
-/** Miniatura con recorte “cover”, esquinas redondeadas y velos suaves (lado texto y base). */
-function createHeroThumbnailDataUrl(
-  img: HTMLImageElement,
-  widthMm: number,
-  heightMm: number,
-  radiusMm: number,
-): string {
+/** Foto en círculo, recorte cover. Fondo previo al clip = mismo negro que la tarjeta (JPEG sin alpha). */
+function createHeroCircularThumbDataUrl(img: HTMLImageElement, diameterMm: number): string {
   const pxPerMm = 10
-  const w = Math.round(widthMm * pxPerMm)
-  const h = Math.round(heightMm * pxPerMm)
-  const r = Math.max(2, Math.round(radiusMm * pxPerMm))
+  const w = Math.round(diameterMm * pxPerMm)
+  const r = w / 2
   const canvas = document.createElement('canvas')
   canvas.width = w
-  canvas.height = h
+  canvas.height = w
   const ctx = canvas.getContext('2d')!
+  ctx.fillStyle = `rgb(${BG.join(',')})`
+  ctx.fillRect(0, 0, w, w)
+
   ctx.beginPath()
-  if (typeof ctx.roundRect === 'function') {
-    ctx.roundRect(0, 0, w, h, r)
-  } else {
-    ctx.rect(0, 0, w, h)
-  }
+  ctx.arc(r, r, r - 0.25, 0, Math.PI * 2)
   ctx.clip()
 
   const iw = img.naturalWidth
   const ih = img.naturalHeight
-  const scale = Math.max(w / iw, h / ih)
+  const scale = Math.max(w / iw, w / ih)
   const dw = iw * scale
   const dh = ih * scale
   const ox = (w - dw) / 2
-  const oy = (h - dh) / 2
+  const oy = (w - dh) / 2
   ctx.drawImage(img, ox, oy, dw, dh)
-
-  const vg = ctx.createLinearGradient(0, h * 0.5, 0, h)
-  vg.addColorStop(0, 'rgba(0,0,0,0)')
-  vg.addColorStop(1, 'rgba(8,6,5,0.42)')
-  ctx.fillStyle = vg
-  ctx.fillRect(0, 0, w, h)
-
-  const hg = ctx.createLinearGradient(w * 0.5, 0, w, 0)
-  hg.addColorStop(0, 'rgba(0,0,0,0)')
-  hg.addColorStop(1, 'rgba(0,0,0,0.38)')
-  ctx.fillStyle = hg
-  ctx.fillRect(0, 0, w, h)
 
   return canvas.toDataURL('image/jpeg', 0.9)
 }
@@ -94,29 +75,6 @@ function drawLashAccent(doc: jsPDF, centerX: number, baseY: number, spreadMm: nu
   ctx.restore()
 }
 
-/** Textura muy suave de pestañas en la zona del texto (como el patrón de fondo de la web). */
-function drawBackgroundLashTexture(doc: jsPDF) {
-  const ctx = doc.context2d
-  ctx.save()
-  ctx.strokeStyle = `rgb(${GOLD.join(',')})`
-  ctx.globalAlpha = 0.09
-  ctx.lineWidth = 0.11
-  ctx.lineCap = 'round'
-  const baseX0 = 37
-  const baseY0 = 26
-  for (let row = 0; row < 5; row++) {
-    for (let col = 0; col < 5; col++) {
-      const x = baseX0 + col * 8.2 + (row % 2) * 2.5
-      const y = baseY0 + row * 6.2
-      ctx.beginPath()
-      ctx.moveTo(x, y)
-      ctx.quadraticCurveTo(x + 1.8 + col * 0.08, y + 4.5, x - 0.6, y + 10.5)
-      ctx.stroke()
-    }
-  }
-  ctx.restore()
-}
-
 async function buildPdfDoc(data: ContactCardData) {
   const doc = new jsPDF({
     orientation: 'landscape',
@@ -125,12 +83,12 @@ async function buildPdfDoc(data: ContactCardData) {
   })
 
   const m = 3.8
-  const photoW = 27.5
-  const photoH = 47.4
+  /** Mitad del ancho de la foto anterior (~27,5 mm); forma circular. */
+  const photoD = 27.5 / 2
   const photoX = m
-  const photoY = m
+  const photoY = (55 - photoD) / 2
   const gutter = 4
-  const contentLeft = photoX + photoW + gutter
+  const contentLeft = photoX + photoD + gutter
   const contentRight = 85 - m
   const contentCenterX = (contentLeft + contentRight) / 2
   const textMaxW = contentRight - contentLeft - 1.5
@@ -138,15 +96,15 @@ async function buildPdfDoc(data: ContactCardData) {
   doc.setFillColor(BG[0], BG[1], BG[2])
   doc.rect(0, 0, 85, 55, 'F')
 
-  drawBackgroundLashTexture(doc)
-
   const img = await loadImage(heroImageSrc)
-  const thumb = createHeroThumbnailDataUrl(img, photoW, photoH, 2.4)
-  doc.addImage(thumb, 'JPEG', photoX, photoY, photoW, photoH)
+  const thumb = createHeroCircularThumbDataUrl(img, photoD)
+  doc.addImage(thumb, 'JPEG', photoX, photoY, photoD, photoD)
 
+  const photoCx = photoX + photoD / 2
+  const photoCy = photoY + photoD / 2
   doc.setDrawColor(GOLD[0], GOLD[1], GOLD[2])
-  doc.setLineWidth(0.32)
-  doc.roundedRect(photoX, photoY, photoW, photoH, 2.3, 2.3, 'S')
+  doc.setLineWidth(0.3)
+  doc.circle(photoCx, photoCy, photoD / 2, 'S')
 
   doc.setDrawColor(GOLD[0], GOLD[1], GOLD[2])
   doc.setLineWidth(0.22)
